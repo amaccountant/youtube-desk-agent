@@ -28,7 +28,7 @@
       .card {
         position: relative; background: rgba(255,253,247,0.94);
         border: 1px solid rgba(160,130,90,0.35); border-radius: 8px;
-        padding: 50px 44px; max-width: 680px; width: 100%; text-align: center;
+        padding: 50px 44px; max-width: 720px; width: 100%; text-align: center;
         box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 30px 60px rgba(90,70,40,0.18);
         animation: fadeIn 1.2s ease;
       }
@@ -75,6 +75,7 @@
       .detected.warn { color:#b45b3e; }
 
       .hint { font-size:15px; font-style:italic; color:#a08c6a; margin-top:8px; }
+      .hint a { color:#8a6d34; }
 
       .help-box { display:none; margin:14px 0; background:#f7ecd6; border:1px dashed rgba(140,110,70,0.5); border-radius:8px; padding:16px 18px; }
       .help-box.show { display:block; }
@@ -103,6 +104,15 @@
       .loader span:nth-child(2){animation-delay:.2s;} .loader span:nth-child(3){animation-delay:.4s;}
       @keyframes bounce { to { transform:translateY(-10px); opacity:.5; } }
 
+      /* Results */
+      #results { display:none; text-align:left; margin-top:10px; animation:fadeIn .8s ease; }
+      #results h2 { font-family:"Dancing Script",cursive; font-size:34px; color:#7a5c2e; text-align:center; margin-bottom:6px; }
+      .wisdom {
+        background:#fffdf7; border:1px solid rgba(160,130,90,0.35); border-radius:8px;
+        padding:26px 28px; margin-top:16px; white-space:pre-wrap; line-height:1.7;
+        font-size:17px; color:#4a3c28;
+      }
+
       .footer { margin-top:28px; font-size:15px; font-style:italic; color:#a08c6a; text-align:center; }
     </style>
   </head>
@@ -124,12 +134,28 @@
         <div class="dot" id="dot1"></div>
         <div class="dot" id="dot2"></div>
         <div class="dot" id="dot3"></div>
+        <div class="dot" id="dot4"></div>
       </div>
 
       <div class="divider"></div>
 
-      <!-- PANEL 0: Audio or Video (auto-advances) -->
+      <!-- PANEL 0: API key -->
       <div class="panel active" id="panel0">
+        <p class="question">First, connect your free wisdom engine</p>
+        <label class="field-label">Your Google Gemini API key</label>
+        <input type="password" id="apiKey" placeholder="Paste your Gemini API key here" />
+        <p class="hint">
+          Your key stays only in your own browser — it is never sent to us or stored online.
+          Don’t have one? Get a free key at
+          <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a>.
+        </p>
+        <div class="nav">
+          <button onclick="saveKey()">Continue →</button>
+        </div>
+      </div>
+
+      <!-- PANEL 1: Audio or Video (auto-advances) -->
+      <div class="panel" id="panel1">
         <p class="question">What kind of wisdom did you find?</p>
         <div class="choices">
           <div class="choice" id="typeVideo" onclick="selectType('video')">
@@ -140,22 +166,25 @@
           </div>
         </div>
         <p class="hint" style="text-align:center;">Select one to continue automatically.</p>
+        <div class="nav">
+          <button class="secondary" onclick="showPanel(0)">← Back</button>
+        </div>
       </div>
 
-      <!-- PANEL 1: Link with live detection -->
-      <div class="panel" id="panel1">
+      <!-- PANEL 2: Link -->
+      <div class="panel" id="panel2">
         <p class="question" id="linkQuestion">Paste the link that inspired you</p>
         <label class="field-label">Link</label>
         <input type="text" id="mediaLink" placeholder="https://..." oninput="detectPlatform()" />
         <p class="detected" id="detected"></p>
         <div class="nav">
-          <button class="secondary" onclick="goTo(0)">← Back</button>
-          <button onclick="goTo(2)">Continue →</button>
+          <button class="secondary" onclick="showPanel(1)">← Back</button>
+          <button onclick="goTo(3)">Continue →</button>
         </div>
       </div>
 
-      <!-- PANEL 2: Transcript help + transcript -->
-      <div class="panel" id="panel2">
+      <!-- PANEL 3: Transcript -->
+      <div class="panel" id="panel3">
         <p class="question">Do you already have the transcript?</p>
         <div class="choices">
           <div class="choice" id="helpNo" onclick="selectHelp('no')">
@@ -179,13 +208,13 @@
         </div>
 
         <div class="nav">
-          <button class="secondary" onclick="goTo(1)">← Back</button>
-          <button onclick="goTo(3)">Continue →</button>
+          <button class="secondary" onclick="showPanel(2)">← Back</button>
+          <button onclick="goTo(4)">Continue →</button>
         </div>
       </div>
 
-      <!-- PANEL 3: Choose outputs -->
-      <div class="panel" id="panel3">
+      <!-- PANEL 4: Choose outputs -->
+      <div class="panel" id="panel4">
         <p class="question">What would you like in your keepsake?</p>
         <div class="options" id="optionsList">
           <label class="opt"><input type="checkbox" value="Main idea" checked /> Main idea</label>
@@ -196,11 +225,10 @@
           <label class="opt"><input type="checkbox" value="Daily checklist" checked /> Daily checklist</label>
           <label class="opt"><input type="checkbox" value="Reflection question" checked /> Reflection question</label>
           <label class="opt"><input type="checkbox" value="Limitations" /> Limitations</label>
-          <label class="opt"><input type="checkbox" value="Captivating visuals" checked /> Captivating visuals</label>
           <label class="opt"><input type="checkbox" value="One page summary" checked /> One-page summary</label>
         </div>
         <div class="nav">
-          <button class="secondary" onclick="goTo(2)">← Back</button>
+          <button class="secondary" onclick="showPanel(3)">← Back</button>
           <button onclick="handleFinish()">Capture the Wisdom ✒</button>
         </div>
       </div>
@@ -208,56 +236,49 @@
       <div class="loader" id="loader"><span></span><span></span><span></span></div>
       <p class="message" id="message"></p>
 
+      <!-- Results -->
+      <div id="results">
+        <h2>Your Wisdom Keepsake</h2>
+        <div class="wisdom" id="wisdomText"></div>
+        <div class="nav">
+          <button class="secondary" onclick="startOver()">↺ Capture another</button>
+        </div>
+      </div>
+
       <p class="footer">Wisdom Keeper · Notes for a more intentional life</p>
     </div>
 
     <script>
       let mediaType = "";
       let helpChoice = "";
-      let platform = "";   // detected platform key
+      let platform = "";
 
-      // Platform knowledge base
       const platforms = {
-        youtube: {
-          name: "YouTube",
-          hasTranscript: true,
-          steps: [
-            "Open the video on YouTube.",
-            "Click “…more” below the video, then “Show transcript”.",
-            "A transcript panel opens on the right.",
-            "Select all the text, copy it, and paste it below."
-          ]
-        },
-        spotify: {
-          name: "Spotify",
-          hasTranscript: false,
-          kind: "Spotify usually doesn’t allow copying transcripts. If this is a podcast, try finding the same episode on YouTube or the show’s official website, which often provide transcripts you can copy and paste below."
-        },
-        apple: {
-          name: "Apple Podcasts",
-          hasTranscript: false,
-          kind: "Apple Podcasts shows transcripts but doesn’t allow easy copying. Try finding the same episode on YouTube or the creator’s website for a copyable transcript, then paste it below."
-        },
-        vimeo: {
-          name: "Vimeo",
-          hasTranscript: true,
-          steps: [
-            "Open the video on Vimeo.",
-            "Click the “CC / Subtitles” icon to ensure captions exist.",
-            "If the creator enabled a transcript, it appears below or beside the video.",
-            "Select the transcript text, copy it, and paste it below."
-          ]
-        },
-        ted: {
-          name: "TED",
-          hasTranscript: true,
-          steps: [
-            "Open the talk on TED.com.",
-            "Click the “Transcript” tab below the video.",
-            "Choose your language if prompted.",
-            "Select the transcript text, copy it, and paste it below."
-          ]
-        }
+        youtube: { name:"YouTube", hasTranscript:true, steps:[
+          "Open the video on YouTube.",
+          "Click “…more” below the video, then “Show transcript”.",
+          "A transcript panel opens on the right.",
+          "Select all the text, copy it, and paste it below." ] },
+        spotify: { name:"Spotify", hasTranscript:false,
+          kind:"Spotify usually doesn’t allow copying transcripts. If this is a podcast, try the same episode on YouTube or the show’s official website, which often provide copyable transcripts." },
+        apple: { name:"Apple Podcasts", hasTranscript:false,
+          kind:"Apple Podcasts shows transcripts but doesn’t allow easy copying. Try the same episode on YouTube or the creator’s website for a copyable transcript, then paste it below." },
+        vimeo: { name:"Vimeo", hasTranscript:true, steps:[
+          "Open the video on Vimeo.",
+          "Click the “CC / Subtitles” icon to confirm captions exist.",
+          "If the creator enabled a transcript, it appears near the video.",
+          "Select the text, copy it, and paste it below." ] },
+        ted: { name:"TED", hasTranscript:true, steps:[
+          "Open the talk on TED.com.",
+          "Click the “Transcript” tab below the video.",
+          "Choose your language if prompted.",
+          "Select the text, copy it, and paste it below." ] }
+      };
+
+      // Load saved key if any
+      window.onload = function () {
+        const saved = localStorage.getItem("wk_gemini_key");
+        if (saved) document.getElementById("apiKey").value = saved;
       };
 
       function detectFromLink(link) {
@@ -271,44 +292,47 @@
       }
 
       function setDot(step) {
-        for (let i = 0; i < 4; i++)
+        for (let i = 0; i < 5; i++)
           document.getElementById("dot" + i).classList.toggle("active", i <= step);
       }
       function showPanel(step) {
-        for (let i = 0; i < 4; i++)
+        document.getElementById("results").style.display = "none";
+        for (let i = 0; i < 5; i++)
           document.getElementById("panel" + i).classList.remove("active");
         document.getElementById("panel" + step).classList.add("active");
         setDot(step);
         document.getElementById("message").textContent = "";
       }
 
-      // Auto-advance on selecting type
+      function saveKey() {
+        const key = document.getElementById("apiKey").value.trim();
+        if (key === "") { flash("Please paste your Gemini API key to continue."); return; }
+        localStorage.setItem("wk_gemini_key", key);
+        showPanel(1);
+      }
+
       function selectType(type) {
         mediaType = type;
         document.getElementById("typeVideo").classList.toggle("selected", type === "video");
         document.getElementById("typeAudio").classList.toggle("selected", type === "audio");
-        // update link question wording
         document.getElementById("linkQuestion").textContent =
           type === "audio" ? "Paste the audio link that inspired you"
                             : "Paste the video link that inspired you";
-        setTimeout(() => showPanel(1), 300); // gentle auto-advance
+        setTimeout(() => showPanel(2), 300);
       }
 
       function detectPlatform() {
         const link = document.getElementById("mediaLink").value.trim();
         const detected = document.getElementById("detected");
         platform = detectFromLink(link);
-
         if (link === "") { detected.textContent = ""; detected.className = "detected"; return; }
-
         if (platform && platforms[platform]) {
           detected.textContent = "Detected: " + platforms[platform].name + " ✓";
           detected.className = "detected ok";
         } else {
-          detected.textContent = "Hmm, I don’t recognise this platform — but you can still paste a transcript manually.";
+          detected.textContent = "I don’t recognise this platform — but you can still paste a transcript manually.";
           detected.className = "detected warn";
         }
-        // refresh help steps if user already asked for guidance
         if (helpChoice === "yes") buildHelp();
       }
 
@@ -317,7 +341,6 @@
         document.getElementById("helpNo").classList.toggle("selected", choice === "no");
         document.getElementById("helpYes").classList.toggle("selected", choice === "yes");
         document.getElementById("transcriptArea").style.display = "block";
-
         if (choice === "yes") buildHelp();
         else document.getElementById("helpBox").classList.remove("show");
       }
@@ -327,38 +350,27 @@
         const steps = document.getElementById("helpSteps");
         const kind = document.getElementById("helpKind");
         const title = document.getElementById("helpTitle");
-
         helpBox.classList.add("show");
-        steps.innerHTML = "";
-        kind.style.display = "none";
-        kind.textContent = "";
-
+        steps.innerHTML = ""; kind.style.display = "none"; kind.textContent = "";
         if (platform && platforms[platform]) {
           const p = platforms[platform];
           title.textContent = "How to copy the transcript from " + p.name;
-          if (p.hasTranscript) {
-            steps.innerHTML = p.steps.map(s => "<li>" + s + "</li>").join("");
-          } else {
-            kind.style.display = "block";
-            kind.textContent = p.kind;
-          }
+          if (p.hasTranscript) steps.innerHTML = p.steps.map(s => "<li>" + s + "</li>").join("");
+          else { kind.style.display = "block"; kind.textContent = p.kind; }
         } else {
           title.textContent = "A gentle note";
           kind.style.display = "block";
           kind.textContent =
-            "I don’t yet recognise this platform. Many services don’t offer copyable transcripts. " +
-            "If possible, find the same talk on YouTube or the creator’s website, copy the transcript there, and paste it below. " +
-            "If you already have the transcript another way, simply paste it below.";
+            "I don’t yet recognise this platform. If possible, find the same talk on YouTube or the creator’s website, copy the transcript there, and paste it below. If you already have the transcript, simply paste it below.";
         }
       }
 
       function goTo(step) {
-        if (step === 1 && mediaType === "") { flash("Please choose Video or Audio first."); return; }
-        if (step === 2) {
+        if (step === 3) {
           const link = document.getElementById("mediaLink").value.trim();
           if (link === "") { flash("Please paste the link before continuing."); return; }
         }
-        if (step === 3) {
+        if (step === 4) {
           if (helpChoice === "") { flash("Please tell me if you have the transcript or need help."); return; }
           const transcript = document.getElementById("transcript").value.trim();
           if (transcript === "") { flash("Please paste the transcript before continuing."); return; }
@@ -368,20 +380,93 @@
 
       function flash(text) { document.getElementById("message").textContent = text; }
 
-      function handleFinish() {
+      function buildPrompt(transcript, chosen) {
+        return `You are a wise, warm life-coaching assistant called Wisdom Keeper.
+
+From the transcript below, create a concise, practical "desk keepsake".
+Use ONLY information supported by the transcript. Do NOT invent facts, quotes, or statistics.
+Write in a calm, encouraging, human tone.
+
+Include ONLY these sections (in this order), each with a clear heading:
+${chosen.map(c => "- " + c).join("\n")}
+
+Formatting rules:
+- Keep it concise enough to fit on one printed page.
+- Use short lines and simple language.
+- For "Five key messages", give exactly five.
+- For "Start doing" and "Stop doing", give 3 specific items each.
+- For "Daily checklist", use checkbox lines like "[ ] ...".
+- For "Reflection question", give one meaningful question.
+- If something is unclear in the transcript, say "Not clearly stated in the source."
+
+TRANSCRIPT:
+${transcript}`;
+      }
+
+      async function handleFinish() {
+        const key = localStorage.getItem("wk_gemini_key");
+        if (!key) { flash("Your key is missing. Please go back to the first step."); return; }
+
         const transcript = document.getElementById("transcript").value.trim();
         const chosen = [];
         document.querySelectorAll("#optionsList input:checked").forEach(cb => chosen.push(cb.value));
-        if (chosen.length === 0) { flash("Please choose at least one thing you'd like in your keepsake."); return; }
+        if (chosen.length === 0) { flash("Please choose at least one thing for your keepsake."); return; }
 
         const loader = document.getElementById("loader");
         loader.style.display = "flex"; flash("");
-        setTimeout(function () {
+
+        const prompt = buildPrompt(transcript, chosen);
+
+        try {
+          const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + key;
+          const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }]
+            })
+          });
+
+          const data = await response.json();
           loader.style.display = "none";
-          const words = transcript.split(/\s+/).length;
-          flash("Received " + words + " words • " + chosen.length +
-                " sections chosen. Next: turning this into your one-pager.");
-        }, 1500);
+
+          if (data.error) {
+            flash("The wisdom engine replied with an error: " + data.error.message);
+            return;
+          }
+
+          const text =
+            data.candidates &&
+            data.candidates[0] &&
+            data.candidates[0].content &&
+            data.candidates[0].content.parts[0].text;
+
+          if (!text) { flash("I couldn't read a response. Please try again."); return; }
+
+          // Show results
+          for (let i = 0; i < 5; i++) document.getElementById("panel" + i).classList.remove("active");
+          document.getElementById("wisdomText").textContent = text;
+          document.getElementById("results").style.display = "block";
+          setDot(4);
+
+        } catch (err) {
+          loader.style.display = "none";
+          flash("Something went wrong reaching the wisdom engine. Please check your key and try again.");
+        }
+      }
+
+      function startOver() {
+        document.getElementById("mediaLink").value = "";
+        document.getElementById("transcript").value = "";
+        document.getElementById("detected").textContent = "";
+        mediaType = ""; helpChoice = ""; platform = "";
+        document.getElementById("typeVideo").classList.remove("selected");
+        document.getElementById("typeAudio").classList.remove("selected");
+        document.getElementById("helpNo").classList.remove("selected");
+        document.getElementById("helpYes").classList.remove("selected");
+        document.getElementById("transcriptArea").style.display = "none";
+        document.getElementById("helpBox").classList.remove("show");
+        showPanel(1);
       }
     </script>
   </body>
