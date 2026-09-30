@@ -3,6 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Prevent caching so users always get the newest version -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
     <title>Wisdom Keeper · Turn videos into wisdom you live by</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -10,6 +16,9 @@
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Dancing+Script:wght@500;700&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Free PDF tool -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,7 +37,7 @@
       .card {
         position: relative; background: rgba(255,253,247,0.94);
         border: 1px solid rgba(160,130,90,0.35); border-radius: 8px;
-        padding: 50px 44px; max-width: 720px; width: 100%; text-align: center;
+        padding: 50px 44px; max-width: 760px; width: 100%; text-align: center;
         box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 30px 60px rgba(90,70,40,0.18);
         animation: fadeIn 1.2s ease;
       }
@@ -84,14 +93,10 @@
       .help-box ol { padding-left:20px; color:#6b5638; font-size:16px; line-height:1.7; }
       .help-box .kind { color:#b45b3e; font-size:16px; line-height:1.6; }
 
-      /* ---------- Fixed checkbox layout (no flicker) ---------- */
       .options { display:grid; grid-template-columns:1fr 1fr; gap:10px 18px; margin-bottom:8px; }
       @media (max-width:480px){ .options { grid-template-columns:1fr; } .choices{flex-direction:column;} }
-      .opt {
-        display:flex; align-items:center; gap:10px; padding:10px 12px;
-        border:1px solid rgba(140,110,70,0.3); border-radius:6px; background:#fffdf7;
-        transition:border-color .2s ease;
-      }
+      .opt { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid rgba(140,110,70,0.3);
+        border-radius:6px; background:#fffdf7; transition:border-color .2s ease; }
       .opt:hover { border-color:#b08a4a; }
       .opt input[type=checkbox] { width:18px; height:18px; accent-color:#b08a4a; cursor:pointer; flex:none; }
       .opt label { font-size:17px; color:#4a3c28; cursor:pointer; user-select:none; }
@@ -112,13 +117,31 @@
       .loader span:nth-child(2){animation-delay:.2s;} .loader span:nth-child(3){animation-delay:.4s;}
       @keyframes bounce { to { transform:translateY(-10px); opacity:.5; } }
 
-      #results { display:none; text-align:left; margin-top:10px; animation:fadeIn .8s ease; }
-      #results h2 { font-family:"Dancing Script",cursive; font-size:34px; color:#7a5c2e; text-align:center; margin-bottom:6px; }
-      .wisdom {
-        background:#fffdf7; border:1px solid rgba(160,130,90,0.35); border-radius:8px;
-        padding:26px 28px; margin-top:16px; white-space:pre-wrap; line-height:1.7;
-        font-size:17px; color:#4a3c28;
+      /* ---------- Results / Keepsake ---------- */
+      #results { display:none; margin-top:10px; animation:fadeIn .8s ease; }
+      #results h2 { font-family:"Dancing Script",cursive; font-size:32px; color:#7a5c2e; text-align:center; margin-bottom:10px; }
+
+      /* The printable page */
+      .keepsake {
+        background:#fffdf7; border:2px solid #d9c290; border-radius:6px;
+        padding:34px 34px 28px; text-align:left;
+        box-shadow:0 10px 30px rgba(90,70,40,0.12);
       }
+      .k-header { text-align:center; border-bottom:1px solid #e2d3ad; padding-bottom:14px; margin-bottom:18px; }
+      .k-title { font-family:"Dancing Script",cursive; font-size:34px; color:#7a5c2e; }
+      .k-sub { font-size:15px; font-style:italic; color:#a08c6a; margin-top:4px; }
+
+      .section { margin-bottom:16px; }
+      .section h3 {
+        font-size:19px; color:#7a5c2e; letter-spacing:.3px;
+        border-left:4px solid #b08a4a; padding-left:10px; margin-bottom:6px;
+        text-transform:capitalize;
+      }
+      .section .body { font-size:16px; line-height:1.6; color:#4a3c28; white-space:pre-wrap; padding-left:14px; }
+      .section .body .check { display:block; }
+
+      .k-footer { text-align:center; border-top:1px solid #e2d3ad; padding-top:12px; margin-top:8px;
+        font-size:13px; font-style:italic; color:#a08c6a; }
 
       .footer { margin-top:28px; font-size:15px; font-style:italic; color:#a08c6a; text-align:center; }
     </style>
@@ -220,7 +243,7 @@
         </div>
       </div>
 
-      <!-- PANEL 4: Choose outputs (fixed, no nesting) -->
+      <!-- PANEL 4: Choose outputs -->
       <div class="panel" id="panel4">
         <p class="question">What would you like in your keepsake?</p>
         <div class="options" id="optionsList">
@@ -243,9 +266,24 @@
       <div class="loader" id="loader"><span></span><span></span><span></span></div>
       <p class="message" id="message"></p>
 
+      <!-- Results -->
       <div id="results">
         <h2>Your Wisdom Keepsake</h2>
-        <div class="wisdom" id="wisdomText"></div>
+
+        <!-- This is the printable area -->
+        <div class="keepsake" id="keepsake">
+          <div class="k-header">
+            <div class="k-title">Wisdom Keeper</div>
+            <div class="k-sub" id="keepsakeDate"></div>
+          </div>
+          <div id="keepsakeBody"></div>
+          <div class="k-footer">Captured with Wisdom Keeper · Review daily, live intentionally.</div>
+        </div>
+
+        <div class="nav">
+          <button onclick="downloadPDF()">⬇ Download PDF</button>
+          <button class="secondary" onclick="window.print()">🖨 Print</button>
+        </div>
         <div class="nav">
           <button class="secondary" onclick="startOver()">↺ Capture another</button>
         </div>
@@ -258,7 +296,7 @@
       let mediaType = "";
       let helpChoice = "";
       let platform = "";
-      let workingModel = "";   // remembered once we find one that works
+      let workingModel = "";
 
       const platforms = {
         youtube: { name:"YouTube", hasTranscript:true, steps:[
@@ -397,51 +435,48 @@ From the transcript below, create a concise, practical "desk keepsake".
 Use ONLY information supported by the transcript. Do NOT invent facts, quotes, or statistics.
 Write in a calm, encouraging, human tone.
 
-Include ONLY these sections (in this order), each with a clear heading:
-${chosen.map(c => "- " + c).join("\n")}
+Return ONLY the following sections, each wrapped EXACTLY like this:
+###SECTION: <name>###
+<content>
 
-Formatting rules:
+Use these section names, in this order, and ONLY these:
+${chosen.map(c => "###SECTION: " + c + "###").join("\n")}
+
+Rules for content:
 - Keep it concise enough to fit on one printed page.
 - Use short lines and simple language.
-- For "Five key messages", give exactly five.
-- For "Start doing" and "Stop doing", give 3 specific items each.
-- For "Daily checklist", use checkbox lines like "[ ] ...".
+- For "Five key messages", give exactly five, each on its own line starting with a number.
+- For "Start doing" and "Stop doing", give 3 specific items, each on its own line starting with "- ".
+- For "Daily checklist", each line must start with "[ ] ".
 - For "Reflection question", give one meaningful question.
-- If something is unclear in the transcript, say "Not clearly stated in the source."
+- If something is unclear in the transcript, write "Not clearly stated in the source."
+- Do NOT add any text outside the ###SECTION### blocks.
 
 TRANSCRIPT:
 ${transcript}`;
       }
 
-      // Get the list of models the key can access, ordered newest-first
       async function getModelCandidates(key) {
         try {
           const url = "https://generativelanguage.googleapis.com/v1beta/models?key=" + key;
           const res = await fetch(url);
           const data = await res.json();
           if (data.error) return { error: data.error.message };
-
           let usable = (data.models || [])
             .filter(m => m.supportedGenerationMethods &&
                          m.supportedGenerationMethods.includes("generateContent"))
             .map(m => m.name.replace(/^models\//, ""))
             .filter(n => !/vision|image|embedding|aqa/i.test(n));
-
-          // Prefer flash models, and higher version numbers first
           usable.sort((a, b) => {
             const fa = /flash/i.test(a) ? 0 : 1;
             const fb = /flash/i.test(b) ? 0 : 1;
             if (fa !== fb) return fa - fb;
-            return b.localeCompare(a); // rough newest-first
+            return b.localeCompare(a);
           });
-
           return { list: usable };
-        } catch (e) {
-          return { error: e.message };
-        }
+        } catch (e) { return { error: e.message }; }
       }
 
-      // Try a single model
       async function tryModel(key, model, prompt) {
         const url = "https://generativelanguage.googleapis.com/v1beta/models/"
           + model + ":generateContent?key=" + key;
@@ -453,59 +488,91 @@ ${transcript}`;
         return await response.json();
       }
 
-      // Extract a suggested model name from an error message, if any
       function extractSuggested(msg) {
         if (!msg) return "";
         const m = msg.match(/models\/([a-zA-Z0-9.\-]+)/g);
         if (!m) return "";
-        // Return the last mentioned model (usually the suggested replacement)
         return m[m.length - 1].replace(/^models\//, "");
       }
 
       async function callGemini(key, prompt) {
-        // If we already found a working model, use it
         if (workingModel) {
           const data = await tryModel(key, workingModel, prompt);
           if (!data.error) {
             const t = data.candidates?.[0]?.content?.parts?.[0]?.text;
             if (t) return { text: t };
           }
-          workingModel = ""; // it stopped working; rediscover
+          workingModel = "";
         }
-
         const disc = await getModelCandidates(key);
         if (disc.error) return { error: disc.error };
-
         let candidates = disc.list.slice();
         const tried = new Set();
         let lastError = "No available model responded.";
-
-        // Try up to a reasonable number of models
         for (let i = 0; i < candidates.length + 3; i++) {
           const model = candidates.shift();
           if (!model || tried.has(model)) continue;
           tried.add(model);
-
           flash("Preparing your wisdom…", true);
           const data = await tryModel(key, model, prompt);
-
           if (!data.error) {
             const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
             if (text) { workingModel = model; return { text: text }; }
             lastError = "Empty response from " + model;
             continue;
           }
-
           lastError = data.error.message;
-
-          // If the error suggests another model, try that next
           const suggested = extractSuggested(data.error.message);
-          if (suggested && !tried.has(suggested)) {
-            candidates.unshift(suggested);
-          }
+          if (suggested && !tried.has(suggested)) candidates.unshift(suggested);
+        }
+        return { error: lastError };
+      }
+
+      // Turn AI text into styled section blocks
+      function renderKeepsake(text) {
+        const body = document.getElementById("keepsakeBody");
+        body.innerHTML = "";
+
+        // Split on ###SECTION: name###
+        const parts = text.split(/###SECTION:\s*/i).map(p => p.trim()).filter(Boolean);
+
+        if (parts.length === 0) {
+          // fallback: show raw text
+          const div = document.createElement("div");
+          div.className = "section";
+          div.innerHTML = '<div class="body">' + escapeHtml(text) + '</div>';
+          body.appendChild(div);
+          return;
         }
 
-        return { error: lastError };
+        parts.forEach(part => {
+          const idx = part.indexOf("###");
+          let name = part, content = "";
+          if (idx !== -1) {
+            name = part.slice(0, idx).trim();
+            content = part.slice(idx + 3).trim();
+          }
+          const section = document.createElement("div");
+          section.className = "section";
+
+          const h3 = document.createElement("h3");
+          h3.textContent = name;
+          section.appendChild(h3);
+
+          const bodyDiv = document.createElement("div");
+          bodyDiv.className = "body";
+          // Convert [ ] checklist lines into nicer lines
+          bodyDiv.innerHTML = escapeHtml(content)
+            .replace(/\[ \]/g, "☐")
+            .replace(/\n/g, "<br>");
+          section.appendChild(bodyDiv);
+
+          body.appendChild(section);
+        });
+      }
+
+      function escapeHtml(s) {
+        return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
       }
 
       async function handleFinish() {
@@ -530,10 +597,29 @@ ${transcript}`;
         }
 
         for (let i = 0; i < 5; i++) document.getElementById("panel" + i).classList.remove("active");
-        document.getElementById("wisdomText").textContent = result.text;
+
+        // Date
+        const now = new Date();
+        document.getElementById("keepsakeDate").textContent =
+          "Captured on " + now.toLocaleDateString();
+
+        renderKeepsake(result.text);
+
         document.getElementById("results").style.display = "block";
         setDot(4);
         flash("");
+      }
+
+      function downloadPDF() {
+        const element = document.getElementById("keepsake");
+        const opt = {
+          margin: 10,
+          filename: "wisdom-keepsake.pdf",
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2, backgroundColor: "#fffdf7" },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+        };
+        html2pdf().set(opt).from(element).save();
       }
 
       function startOver() {
