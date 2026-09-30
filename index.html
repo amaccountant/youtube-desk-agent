@@ -86,9 +86,10 @@
       .options { display:grid; grid-template-columns:1fr 1fr; gap:10px 18px; margin-bottom:8px; }
       @media (max-width:480px){ .options { grid-template-columns:1fr; } .choices{flex-direction:column;} }
       .opt { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid rgba(140,110,70,0.3);
-        border-radius:6px; background:#fffdf7; cursor:pointer; transition:all .25s ease; font-size:17px; color:#4a3c28; }
+        border-radius:6px; background:#fffdf7; cursor:pointer; transition:border-color .25s ease; font-size:17px; color:#4a3c28;
+        user-select:none; }
       .opt:hover { border-color:#b08a4a; }
-      .opt input { width:auto; accent-color:#b08a4a; }
+      .opt input { width:auto; accent-color:#b08a4a; cursor:pointer; }
       .recommended { font-size:14px; font-style:italic; color:#8a6d34; margin-left:4px; }
 
       .nav { display:flex; gap:12px; margin-top:26px; }
@@ -251,14 +252,7 @@
       let mediaType = "";
       let helpChoice = "";
       let platform = "";
-
-      // Models to try, in order. If one is unavailable, we try the next.
-      const MODELS = [
-        "gemini-2.5-flash",
-        "gemini-2.0-flash-001",
-        "gemini-flash-latest",
-        "gemini-1.5-flash"
-      ];
+      let chosenModel = "";   // discovered from your key
 
       const platforms = {
         youtube: { name:"YouTube", hasTranscript:true, steps:[
@@ -409,43 +403,61 @@ TRANSCRIPT:
 ${transcript}`;
       }
 
-      // Try each model until one works
-      async function callGemini(key, prompt) {
-        let lastError = "";
-        for (const model of MODELS) {
-          try {
-            const url = "https://generativelanguage.googleapis.com/v1beta/models/"
-              + model + ":generateContent?key=" + key;
-            const response = await fetch(url, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-            });
-            const data = await response.json();
+      // Ask Google which models this key can use, then pick a good one
+      async function discoverModel(key) {
+        if (chosenModel) return chosenModel;
+        try {
+          const url = "https://generativelanguage.googleapis.com/v1beta/models?key=" + key;
+          const res = await fetch(url);
+          const data = await res.json();
+          if (data.error) return { error: data.error.message };
 
-            if (data.error) {
-              lastError = data.error.message;
-              // If it's a model problem, try the next model; otherwise stop.
-              const msg = (data.error.message || "").toLowerCase();
-              if (msg.includes("model") || msg.includes("not found") || msg.includes("not available")) {
-                continue;
-              } else {
-                return { error: data.error.message };
-              }
-            }
+          const usable = (data.models || []).filter(m =>
+            m.supportedGenerationMethods &&
+            m.supportedGenerationMethods.includes("generateContent")
+          );
 
-            const text =
-              data.candidates &&
-              data.candidates[0] &&
-              data.candidates[0].content &&
-              data.candidates[0].content.parts[0].text;
+          // Prefer a "flash" model (fast + free-friendly), else any usable one
+          let pick = usable.find(m => /flash/i.test(m.name) && !/vision|image|embedding/i.test(m.name));
+          if (!pick) pick = usable.find(m => !/vision|image|embedding/i.test(m.name));
+          if (!pick && usable.length) pick = usable[0];
 
-            if (text) return { text: text, model: model };
-          } catch (e) {
-            lastError = e.message;
-          }
+          if (!pick) return { error: "No text models are available for this key." };
+
+          // m.name looks like "models/gemini-2.5-flash" — strip the prefix
+          chosenModel = pick.name.replace(/^models\//, "");
+          return chosenModel;
+        } catch (e) {
+          return { error: e.message };
         }
-        return { error: lastError || "No available model responded." };
+      }
+
+      async function callGemini(key, prompt) {
+        const model = await discoverModel(key);
+        if (model && model.error) return { error: model.error };
+
+        try {
+          const url = "https://generativelanguage.googleapis.com/v1beta/models/"
+            + model + ":generateContent?key=" + key;
+          const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+          });
+          const data = await response.json();
+          if (data.error) return { error: data.error.message };
+
+          const text =
+            data.candidates &&
+            data.candidates[0] &&
+            data.candidates[0].content &&
+            data.candidates[0].content.parts[0].text;
+
+          if (!text) return { error: "No readable response was returned." };
+          return { text: text, model: model };
+        } catch (e) {
+          return { error: e.message };
+        }
       }
 
       async function handleFinish() {
