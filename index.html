@@ -89,6 +89,7 @@
         border-radius:6px; background:#fffdf7; cursor:pointer; transition:all .25s ease; font-size:17px; color:#4a3c28; }
       .opt:hover { border-color:#b08a4a; }
       .opt input { width:auto; accent-color:#b08a4a; }
+      .recommended { font-size:14px; font-style:italic; color:#8a6d34; margin-left:4px; }
 
       .nav { display:flex; gap:12px; margin-top:26px; }
       button { flex:1; padding:14px; border:none; border-radius:6px; font-size:18px; font-family:"Cormorant Garamond",serif;
@@ -104,7 +105,6 @@
       .loader span:nth-child(2){animation-delay:.2s;} .loader span:nth-child(3){animation-delay:.4s;}
       @keyframes bounce { to { transform:translateY(-10px); opacity:.5; } }
 
-      /* Results */
       #results { display:none; text-align:left; margin-top:10px; animation:fadeIn .8s ease; }
       #results h2 { font-family:"Dancing Script",cursive; font-size:34px; color:#7a5c2e; text-align:center; margin-bottom:6px; }
       .wisdom {
@@ -154,7 +154,7 @@
         </div>
       </div>
 
-      <!-- PANEL 1: Audio or Video (auto-advances) -->
+      <!-- PANEL 1: Audio or Video -->
       <div class="panel" id="panel1">
         <p class="question">What kind of wisdom did you find?</p>
         <div class="choices">
@@ -217,15 +217,15 @@
       <div class="panel" id="panel4">
         <p class="question">What would you like in your keepsake?</p>
         <div class="options" id="optionsList">
-          <label class="opt"><input type="checkbox" value="Main idea" checked /> Main idea</label>
-          <label class="opt"><input type="checkbox" value="Five key messages" checked /> Five key messages</label>
-          <label class="opt"><input type="checkbox" value="Practical applications" checked /> Practical applications</label>
-          <label class="opt"><input type="checkbox" value="Start doing" checked /> Start doing</label>
-          <label class="opt"><input type="checkbox" value="Stop doing" checked /> Stop doing</label>
-          <label class="opt"><input type="checkbox" value="Daily checklist" checked /> Daily checklist</label>
-          <label class="opt"><input type="checkbox" value="Reflection question" checked /> Reflection question</label>
+          <label class="opt"><input type="checkbox" value="Main idea" /> Main idea</label>
+          <label class="opt"><input type="checkbox" value="Five key messages" /> Five key messages</label>
+          <label class="opt"><input type="checkbox" value="Practical applications" /> Practical applications</label>
+          <label class="opt"><input type="checkbox" value="Start doing" /> Start doing</label>
+          <label class="opt"><input type="checkbox" value="Stop doing" /> Stop doing</label>
+          <label class="opt"><input type="checkbox" value="Daily checklist" /> Daily checklist</label>
+          <label class="opt"><input type="checkbox" value="Reflection question" /> Reflection question</label>
           <label class="opt"><input type="checkbox" value="Limitations" /> Limitations</label>
-          <label class="opt"><input type="checkbox" value="One page summary" checked /> One-page summary</label>
+          <label class="opt"><input type="checkbox" value="One page summary" checked /> One-page summary<span class="recommended">(recommended)</span></label>
         </div>
         <div class="nav">
           <button class="secondary" onclick="showPanel(3)">← Back</button>
@@ -236,7 +236,6 @@
       <div class="loader" id="loader"><span></span><span></span><span></span></div>
       <p class="message" id="message"></p>
 
-      <!-- Results -->
       <div id="results">
         <h2>Your Wisdom Keepsake</h2>
         <div class="wisdom" id="wisdomText"></div>
@@ -252,6 +251,14 @@
       let mediaType = "";
       let helpChoice = "";
       let platform = "";
+
+      // Models to try, in order. If one is unavailable, we try the next.
+      const MODELS = [
+        "gemini-2.5-flash",
+        "gemini-2.0-flash-001",
+        "gemini-flash-latest",
+        "gemini-1.5-flash"
+      ];
 
       const platforms = {
         youtube: { name:"YouTube", hasTranscript:true, steps:[
@@ -275,7 +282,6 @@
           "Select the text, copy it, and paste it below." ] }
       };
 
-      // Load saved key if any
       window.onload = function () {
         const saved = localStorage.getItem("wk_gemini_key");
         if (saved) document.getElementById("apiKey").value = saved;
@@ -403,6 +409,45 @@ TRANSCRIPT:
 ${transcript}`;
       }
 
+      // Try each model until one works
+      async function callGemini(key, prompt) {
+        let lastError = "";
+        for (const model of MODELS) {
+          try {
+            const url = "https://generativelanguage.googleapis.com/v1beta/models/"
+              + model + ":generateContent?key=" + key;
+            const response = await fetch(url, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            });
+            const data = await response.json();
+
+            if (data.error) {
+              lastError = data.error.message;
+              // If it's a model problem, try the next model; otherwise stop.
+              const msg = (data.error.message || "").toLowerCase();
+              if (msg.includes("model") || msg.includes("not found") || msg.includes("not available")) {
+                continue;
+              } else {
+                return { error: data.error.message };
+              }
+            }
+
+            const text =
+              data.candidates &&
+              data.candidates[0] &&
+              data.candidates[0].content &&
+              data.candidates[0].content.parts[0].text;
+
+            if (text) return { text: text, model: model };
+          } catch (e) {
+            lastError = e.message;
+          }
+        }
+        return { error: lastError || "No available model responded." };
+      }
+
       async function handleFinish() {
         const key = localStorage.getItem("wk_gemini_key");
         if (!key) { flash("Your key is missing. Please go back to the first step."); return; }
@@ -416,43 +461,18 @@ ${transcript}`;
         loader.style.display = "flex"; flash("");
 
         const prompt = buildPrompt(transcript, chosen);
+        const result = await callGemini(key, prompt);
+        loader.style.display = "none";
 
-        try {
-          const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + key;
-          const response = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }]
-            })
-          });
-
-          const data = await response.json();
-          loader.style.display = "none";
-
-          if (data.error) {
-            flash("The wisdom engine replied with an error: " + data.error.message);
-            return;
-          }
-
-          const text =
-            data.candidates &&
-            data.candidates[0] &&
-            data.candidates[0].content &&
-            data.candidates[0].content.parts[0].text;
-
-          if (!text) { flash("I couldn't read a response. Please try again."); return; }
-
-          // Show results
-          for (let i = 0; i < 5; i++) document.getElementById("panel" + i).classList.remove("active");
-          document.getElementById("wisdomText").textContent = text;
-          document.getElementById("results").style.display = "block";
-          setDot(4);
-
-        } catch (err) {
-          loader.style.display = "none";
-          flash("Something went wrong reaching the wisdom engine. Please check your key and try again.");
+        if (result.error) {
+          flash("The wisdom engine replied with an error: " + result.error);
+          return;
         }
+
+        for (let i = 0; i < 5; i++) document.getElementById("panel" + i).classList.remove("active");
+        document.getElementById("wisdomText").textContent = result.text;
+        document.getElementById("results").style.display = "block";
+        setDot(4);
       }
 
       function startOver() {
