@@ -190,3 +190,117 @@
         font-style: italic;
         color: #6b5638;
         min-height: 24px;
+      }
+
+      .loader {
+        display: none;
+        margin-top: 22px;
+        justify-content: center;
+        gap: 8px;
+      }
+      .loader span {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #b08a4a;
+        animation: bounce 0.6s infinite alternate;
+      }
+      .loader span:nth-child(2) { animation-delay: 0.2s; }
+      .loader span:nth-child(3) { animation-delay: 0.4s; }
+      @keyframes bounce {
+        to { transform: translateY(-10px); opacity: 0.5; }
+      }
+
+      .footer {
+        margin-top: 32px;
+        font-size: 15px;
+        font-style: italic;
+        color: #a08c6a;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="card">
+      <!-- Hand-drawn style quill (SVG) -->
+      <div class="quill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#7a5c2e" stroke-width="1.4"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 4C10 6 6 12 4 20l3-1c1-4 4-7 8-9" />
+          <path d="M20 4c-3 4-6 6-10 8l3 3c4-2 6-5 7-8" />
+          <path d="M4 20l4-4" />
+        </svg>
+      </div>
+
+      <h1>Wisdom Keeper</h1>
+      <p class="tagline">Turn the videos that move you into wisdom you live by.</p>
+
+      <p class="quote" id="quote"></p>
+
+      <div class="divider"></div>
+
+      <label class="label" for="youtubeLink">Paste the link of a video that inspired you</label>
+      <input
+        type="text"
+        id="youtubeLink"
+        placeholder="https://www.youtube.com/watch?v=..."
+      />
+
+      <button onclick="handleClick()">Capture the Wisdom ✒</button>
+
+      <div class="loader" id="loader">
+        <span></span><span></span><span></span>
+      </div>
+
+      <p class="message" id="message"></p>
+
+      <p class="footer">Wisdom Keeper · Notes for a more intentional life</p>
+    </div>
+
+    <script>
+      // Rotating inspiring quotes to set the mood
+      const quotes = [
+        "“Knowing is not enough; we must apply.” — Goethe",
+        "“What we learn with pleasure we never forget.”",
+        "“Small daily improvements lead to stunning results.”",
+        "“The faintest ink is better than the best memory.”",
+        "“Wisdom begins in reflection.”"
+      ];
+
+      let qIndex = 0;
+      const quoteEl = document.getElementById("quote");
+
+      function showQuote() {
+        quoteEl.style.opacity = 0;
+        setTimeout(() => {
+          quoteEl.textContent = quotes[qIndex];
+          quoteEl.style.opacity = 1;
+          qIndex = (qIndex + 1) % quotes.length;
+        }, 500);
+      }
+
+      showQuote();
+      setInterval(showQuote, 5000);
+
+      function handleClick() {
+        const link = document.getElementById("youtubeLink").value;
+        const message = document.getElementById("message");
+        const loader = document.getElementById("loader");
+
+        message.textContent = "";
+
+        if (link.trim() === "") {
+          message.textContent = "Please paste a link to a video that inspired you.";
+          return;
+        }
+
+        loader.style.display = "flex";
+
+        setTimeout(function () {
+          loader.style.display = "none";
+          message.textContent = "Your wisdom is being prepared… (next steps coming soon).";
+        }, 2000);
+      }
+    </script>
+  </body>
+</html>
