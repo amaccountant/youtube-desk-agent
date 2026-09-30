@@ -13,164 +13,104 @@
 
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
-
       body {
         font-family: "Cormorant Garamond", serif;
-        min-height: 100vh;
-        display: flex; justify-content: center; align-items: center;
+        min-height: 100vh; display: flex; justify-content: center; align-items: center;
         padding: 24px; color: #3b322a;
         background:
           radial-gradient(circle at 20% 20%, #fdf6e9, transparent 60%),
           radial-gradient(circle at 80% 80%, #f6e7cf, transparent 60%),
           linear-gradient(135deg, #f7efe0, #efe3cd);
-        background-size: 200% 200%;
-        animation: breathe 18s ease-in-out infinite;
+        background-size: 200% 200%; animation: breathe 18s ease-in-out infinite;
       }
-      @keyframes breathe {
-        0% { background-position: 0% 0%; }
-        50% { background-position: 100% 100%; }
-        100% { background-position: 0% 0%; }
-      }
+      @keyframes breathe { 0%{background-position:0 0;} 50%{background-position:100% 100%;} 100%{background-position:0 0;} }
 
       .card {
-        position: relative;
-        background: rgba(255, 253, 247, 0.94);
-        border: 1px solid rgba(160, 130, 90, 0.35);
-        border-radius: 8px;
-        padding: 50px 44px;
-        max-width: 660px; width: 100%;
-        text-align: center;
+        position: relative; background: rgba(255,253,247,0.94);
+        border: 1px solid rgba(160,130,90,0.35); border-radius: 8px;
+        padding: 50px 44px; max-width: 680px; width: 100%; text-align: center;
         box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 30px 60px rgba(90,70,40,0.18);
         animation: fadeIn 1.2s ease;
       }
-      .card::before {
-        content: ""; position: absolute; inset: 12px;
-        border: 1px solid rgba(160,130,90,0.25);
-        border-radius: 4px; pointer-events: none;
-      }
+      .card::before { content:""; position:absolute; inset:12px; border:1px solid rgba(160,130,90,0.25); border-radius:4px; pointer-events:none; }
       @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
 
-      .quill {
-        width: 78px; height: 78px; margin: 0 auto 8px auto;
-        display: flex; align-items: center; justify-content: center;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(212,175,110,0.35), transparent 70%);
-        animation: glow 6s ease-in-out infinite;
-      }
+      .quill { width:78px;height:78px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;border-radius:50%;
+        background:radial-gradient(circle, rgba(212,175,110,0.35), transparent 70%); animation:glow 6s ease-in-out infinite; }
       @keyframes glow { 0%,100%{transform:scale(1);opacity:.9;} 50%{transform:scale(1.05);opacity:1;} }
-      .quill svg { width: 42px; height: 42px; }
+      .quill svg { width:42px; height:42px; }
 
-      h1 {
-        font-family: "Dancing Script", cursive;
-        font-size: 44px; font-weight: 700; color: #7a5c2e; line-height: 1.1;
-      }
-      .tagline { font-size: 18px; font-style: italic; color: #8a7350; margin-bottom: 18px; }
+      h1 { font-family:"Dancing Script",cursive; font-size:44px; font-weight:700; color:#7a5c2e; line-height:1.1; }
+      .tagline { font-size:18px; font-style:italic; color:#8a7350; margin-bottom:18px; }
 
-      /* Progress dots */
-      .progress { display: flex; justify-content: center; gap: 8px; margin-bottom: 22px; }
-      .dot {
-        width: 9px; height: 9px; border-radius: 50%;
-        background: rgba(160,130,90,0.35); transition: all .3s ease;
-      }
-      .dot.active { background: #b08a4a; transform: scale(1.3); }
+      .progress { display:flex; justify-content:center; gap:8px; margin-bottom:22px; }
+      .dot { width:9px;height:9px;border-radius:50%;background:rgba(160,130,90,0.35);transition:all .3s ease; }
+      .dot.active { background:#b08a4a; transform:scale(1.3); }
 
-      .divider {
-        width: 80px; height: 1px; background: rgba(160,130,90,0.5);
-        margin: 0 auto 26px auto; position: relative;
-      }
-      .divider::after {
-        content: "❦"; position: absolute; top: -13px; left: 50%;
-        transform: translateX(-50%); color: #b08a4a; font-size: 18px;
-        background: rgba(255,253,247,0.94); padding: 0 8px;
-      }
+      .divider { width:80px;height:1px;background:rgba(160,130,90,0.5);margin:0 auto 26px;position:relative; }
+      .divider::after { content:"❦";position:absolute;top:-13px;left:50%;transform:translateX(-50%);color:#b08a4a;font-size:18px;background:rgba(255,253,247,0.94);padding:0 8px; }
 
-      /* Each step panel */
-      .panel { display: none; animation: fadeIn .6s ease; text-align: left; }
-      .panel.active { display: block; }
+      .panel { display:none; animation:fadeIn .5s ease; text-align:left; }
+      .panel.active { display:block; }
 
-      .question {
-        font-size: 22px; color: #6b5638; margin-bottom: 18px;
-        text-align: center; line-height: 1.4;
-      }
+      .question { font-size:22px; color:#6b5638; margin-bottom:18px; text-align:center; line-height:1.4; }
 
-      /* Choice buttons (Audio/Video, Yes/No) */
-      .choices { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 10px; }
-      .choice {
-        flex: 1; min-width: 130px;
-        padding: 22px 16px; border: 1px solid rgba(140,110,70,0.4);
-        border-radius: 8px; background: #fffdf7; cursor: pointer;
-        transition: all .3s ease; text-align: center;
-      }
-      .choice:hover { border-color: #b08a4a; transform: translateY(-2px); box-shadow: 0 8px 18px rgba(138,109,52,0.2); }
-      .choice.selected { border-color: #b08a4a; background: #f7ecd6; box-shadow: 0 0 0 3px rgba(176,138,74,0.18); }
-      .choice .icon { font-size: 30px; display: block; margin-bottom: 8px; }
-      .choice .text { font-size: 19px; color: #6b5638; }
+      .choices { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:10px; }
+      .choice { flex:1; min-width:130px; padding:22px 16px; border:1px solid rgba(140,110,70,0.4); border-radius:8px;
+        background:#fffdf7; cursor:pointer; transition:all .3s ease; text-align:center; }
+      .choice:hover { border-color:#b08a4a; transform:translateY(-2px); box-shadow:0 8px 18px rgba(138,109,52,0.2); }
+      .choice.selected { border-color:#b08a4a; background:#f7ecd6; box-shadow:0 0 0 3px rgba(176,138,74,0.18); }
+      .choice .icon { font-size:30px; display:block; margin-bottom:8px; }
+      .choice .text { font-size:19px; color:#6b5638; }
 
-      label.field-label { display:block; font-size: 18px; color: #6b5638; margin: 6px 0 8px; }
+      label.field-label { display:block; font-size:18px; color:#6b5638; margin:6px 0 8px; }
 
-      input, textarea {
-        width: 100%; padding: 14px 16px;
-        border: 1px solid rgba(140,110,70,0.45); border-radius: 6px;
-        font-size: 16px; font-family: "Cormorant Garamond", serif;
-        background: #fffdf7; outline: none; color: #3b322a; transition: all .3s ease;
-      }
-      textarea { min-height: 150px; resize: vertical; line-height: 1.5; }
-      input:focus, textarea:focus { border-color:#b08a4a; box-shadow: 0 0 0 4px rgba(176,138,74,0.15); }
+      input, textarea { width:100%; padding:14px 16px; border:1px solid rgba(140,110,70,0.45); border-radius:6px;
+        font-size:16px; font-family:"Cormorant Garamond",serif; background:#fffdf7; outline:none; color:#3b322a; transition:all .3s ease; }
+      textarea { min-height:150px; resize:vertical; line-height:1.5; }
+      input:focus, textarea:focus { border-color:#b08a4a; box-shadow:0 0 0 4px rgba(176,138,74,0.15); }
 
-      .hint { font-size: 15px; font-style: italic; color: #a08c6a; margin-top: 8px; }
+      .detected { font-size:16px; font-style:italic; margin-top:8px; min-height:22px; }
+      .detected.ok { color:#5a7a3e; }
+      .detected.warn { color:#b45b3e; }
 
-      /* Help steps box */
-      .help-box {
-        display: none; margin: 14px 0;
-        background: #f7ecd6; border: 1px dashed rgba(140,110,70,0.5);
-        border-radius: 8px; padding: 16px 18px;
-      }
-      .help-box.show { display: block; }
-      .help-box h4 { font-size: 18px; color: #7a5c2e; margin-bottom: 8px; }
-      .help-box ol { padding-left: 20px; color: #6b5638; font-size: 16px; line-height: 1.7; }
+      .hint { font-size:15px; font-style:italic; color:#a08c6a; margin-top:8px; }
 
-      /* Checkbox list */
-      .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; margin-bottom: 8px; }
-      @media (max-width: 480px){ .options { grid-template-columns: 1fr; } }
-      .opt {
-        display: flex; align-items: center; gap: 10px;
-        padding: 10px 12px; border: 1px solid rgba(140,110,70,0.3);
-        border-radius: 6px; background: #fffdf7; cursor: pointer;
-        transition: all .25s ease; font-size: 17px; color: #4a3c28;
-      }
+      .help-box { display:none; margin:14px 0; background:#f7ecd6; border:1px dashed rgba(140,110,70,0.5); border-radius:8px; padding:16px 18px; }
+      .help-box.show { display:block; }
+      .help-box h4 { font-size:18px; color:#7a5c2e; margin-bottom:8px; }
+      .help-box ol { padding-left:20px; color:#6b5638; font-size:16px; line-height:1.7; }
+      .help-box .kind { color:#b45b3e; font-size:16px; line-height:1.6; }
+
+      .options { display:grid; grid-template-columns:1fr 1fr; gap:10px 18px; margin-bottom:8px; }
+      @media (max-width:480px){ .options { grid-template-columns:1fr; } .choices{flex-direction:column;} }
+      .opt { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid rgba(140,110,70,0.3);
+        border-radius:6px; background:#fffdf7; cursor:pointer; transition:all .25s ease; font-size:17px; color:#4a3c28; }
       .opt:hover { border-color:#b08a4a; }
-      .opt input { width: auto; accent-color: #b08a4a; }
+      .opt input { width:auto; accent-color:#b08a4a; }
 
-      .nav { display: flex; gap: 12px; margin-top: 26px; }
-      button {
-        flex: 1; padding: 14px; border: none; border-radius: 6px;
-        font-size: 18px; font-family: "Cormorant Garamond", serif;
-        letter-spacing: .5px; color: #fffdf7; cursor: pointer;
-        background: linear-gradient(135deg, #b08a4a, #8a6d34);
-        transition: all .4s ease; box-shadow: 0 10px 24px rgba(138,109,52,0.35);
-      }
-      button:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(138,109,52,0.45); }
-      button.secondary {
-        background: transparent; color: #8a6d34;
-        border: 1px solid rgba(140,110,70,0.5); box-shadow: none;
-      }
+      .nav { display:flex; gap:12px; margin-top:26px; }
+      button { flex:1; padding:14px; border:none; border-radius:6px; font-size:18px; font-family:"Cormorant Garamond",serif;
+        letter-spacing:.5px; color:#fffdf7; cursor:pointer; background:linear-gradient(135deg,#b08a4a,#8a6d34);
+        transition:all .4s ease; box-shadow:0 10px 24px rgba(138,109,52,0.35); }
+      button:hover { transform:translateY(-2px); box-shadow:0 14px 28px rgba(138,109,52,0.45); }
+      button.secondary { background:transparent; color:#8a6d34; border:1px solid rgba(140,110,70,0.5); box-shadow:none; }
 
-      .message { margin-top: 20px; font-size: 17px; font-style: italic; color: #b45b3e; min-height: 22px; text-align: center; }
+      .message { margin-top:20px; font-size:17px; font-style:italic; color:#b45b3e; min-height:22px; text-align:center; }
 
-      .loader { display:none; margin-top: 20px; justify-content: center; gap: 8px; }
-      .loader span { width:10px; height:10px; border-radius:50%; background:#b08a4a; animation: bounce .6s infinite alternate; }
+      .loader { display:none; margin-top:20px; justify-content:center; gap:8px; }
+      .loader span { width:10px;height:10px;border-radius:50%;background:#b08a4a;animation:bounce .6s infinite alternate; }
       .loader span:nth-child(2){animation-delay:.2s;} .loader span:nth-child(3){animation-delay:.4s;}
-      @keyframes bounce { to { transform: translateY(-10px); opacity:.5; } }
+      @keyframes bounce { to { transform:translateY(-10px); opacity:.5; } }
 
-      .footer { margin-top: 28px; font-size: 15px; font-style: italic; color: #a08c6a; text-align:center; }
+      .footer { margin-top:28px; font-size:15px; font-style:italic; color:#a08c6a; text-align:center; }
     </style>
   </head>
 
   <body>
     <div class="card">
       <div class="quill">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#7a5c2e" stroke-width="1.4"
-             stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#7a5c2e" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 4C10 6 6 12 4 20l3-1c1-4 4-7 8-9" />
           <path d="M20 4c-3 4-6 6-10 8l3 3c4-2 6-5 7-8" />
           <path d="M4 20l4-4" />
@@ -188,29 +128,26 @@
 
       <div class="divider"></div>
 
-      <!-- PANEL 0: Audio or Video -->
+      <!-- PANEL 0: Audio or Video (auto-advances) -->
       <div class="panel active" id="panel0">
         <p class="question">What kind of wisdom did you find?</p>
         <div class="choices">
           <div class="choice" id="typeVideo" onclick="selectType('video')">
-            <span class="icon">🎬</span>
-            <span class="text">A Video</span>
+            <span class="icon">🎬</span><span class="text">A Video</span>
           </div>
           <div class="choice" id="typeAudio" onclick="selectType('audio')">
-            <span class="icon">🎧</span>
-            <span class="text">An Audio</span>
+            <span class="icon">🎧</span><span class="text">An Audio</span>
           </div>
         </div>
-        <div class="nav">
-          <button onclick="goTo(1)">Continue →</button>
-        </div>
+        <p class="hint" style="text-align:center;">Select one to continue automatically.</p>
       </div>
 
-      <!-- PANEL 1: Link -->
+      <!-- PANEL 1: Link with live detection -->
       <div class="panel" id="panel1">
         <p class="question" id="linkQuestion">Paste the link that inspired you</p>
-        <label class="field-label" id="linkLabel">Link</label>
-        <input type="text" id="mediaLink" placeholder="https://..." />
+        <label class="field-label">Link</label>
+        <input type="text" id="mediaLink" placeholder="https://..." oninput="detectPlatform()" />
+        <p class="detected" id="detected"></p>
         <div class="nav">
           <button class="secondary" onclick="goTo(0)">← Back</button>
           <button onclick="goTo(2)">Continue →</button>
@@ -222,23 +159,22 @@
         <p class="question">Do you already have the transcript?</p>
         <div class="choices">
           <div class="choice" id="helpNo" onclick="selectHelp('no')">
-            <span class="icon">✔</span>
-            <span class="text">Yes, I have it</span>
+            <span class="icon">✔</span><span class="text">Yes, I have it</span>
           </div>
           <div class="choice" id="helpYes" onclick="selectHelp('yes')">
-            <span class="icon">🧭</span>
-            <span class="text">No, guide me</span>
+            <span class="icon">🧭</span><span class="text">No, guide me</span>
           </div>
         </div>
 
         <div class="help-box" id="helpBox">
-          <h4>How to copy the transcript</h4>
+          <h4 id="helpTitle">How to copy the transcript</h4>
           <ol id="helpSteps"></ol>
+          <p class="kind" id="helpKind" style="display:none;"></p>
         </div>
 
-        <div id="transcriptArea" style="display:none; margin-top: 16px;">
+        <div id="transcriptArea" style="display:none; margin-top:16px;">
           <label class="field-label">Paste the transcript here</label>
-          <textarea id="transcript" placeholder="Paste the transcript of the video/audio here..."></textarea>
+          <textarea id="transcript" placeholder="Paste the transcript here..."></textarea>
           <p class="hint">Every meaningful word helps me craft better wisdom for you.</p>
         </div>
 
@@ -263,7 +199,6 @@
           <label class="opt"><input type="checkbox" value="Captivating visuals" checked /> Captivating visuals</label>
           <label class="opt"><input type="checkbox" value="One page summary" checked /> One-page summary</label>
         </div>
-
         <div class="nav">
           <button class="secondary" onclick="goTo(2)">← Back</button>
           <button onclick="handleFinish()">Capture the Wisdom ✒</button>
@@ -277,119 +212,176 @@
     </div>
 
     <script>
-      let mediaType = "";   // "video" or "audio"
-      let helpChoice = "";  // "yes" or "no"
+      let mediaType = "";
+      let helpChoice = "";
+      let platform = "";   // detected platform key
 
-      function setDot(step) {
-        for (let i = 0; i < 4; i++) {
-          document.getElementById("dot" + i).classList.toggle("active", i <= step);
+      // Platform knowledge base
+      const platforms = {
+        youtube: {
+          name: "YouTube",
+          hasTranscript: true,
+          steps: [
+            "Open the video on YouTube.",
+            "Click “…more” below the video, then “Show transcript”.",
+            "A transcript panel opens on the right.",
+            "Select all the text, copy it, and paste it below."
+          ]
+        },
+        spotify: {
+          name: "Spotify",
+          hasTranscript: false,
+          kind: "Spotify usually doesn’t allow copying transcripts. If this is a podcast, try finding the same episode on YouTube or the show’s official website, which often provide transcripts you can copy and paste below."
+        },
+        apple: {
+          name: "Apple Podcasts",
+          hasTranscript: false,
+          kind: "Apple Podcasts shows transcripts but doesn’t allow easy copying. Try finding the same episode on YouTube or the creator’s website for a copyable transcript, then paste it below."
+        },
+        vimeo: {
+          name: "Vimeo",
+          hasTranscript: true,
+          steps: [
+            "Open the video on Vimeo.",
+            "Click the “CC / Subtitles” icon to ensure captions exist.",
+            "If the creator enabled a transcript, it appears below or beside the video.",
+            "Select the transcript text, copy it, and paste it below."
+          ]
+        },
+        ted: {
+          name: "TED",
+          hasTranscript: true,
+          steps: [
+            "Open the talk on TED.com.",
+            "Click the “Transcript” tab below the video.",
+            "Choose your language if prompted.",
+            "Select the transcript text, copy it, and paste it below."
+          ]
         }
+      };
+
+      function detectFromLink(link) {
+        const l = link.toLowerCase();
+        if (l.includes("youtube.com") || l.includes("youtu.be")) return "youtube";
+        if (l.includes("spotify.com")) return "spotify";
+        if (l.includes("podcasts.apple.com")) return "apple";
+        if (l.includes("vimeo.com")) return "vimeo";
+        if (l.includes("ted.com")) return "ted";
+        return "";
       }
 
+      function setDot(step) {
+        for (let i = 0; i < 4; i++)
+          document.getElementById("dot" + i).classList.toggle("active", i <= step);
+      }
       function showPanel(step) {
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 4; i++)
           document.getElementById("panel" + i).classList.remove("active");
-        }
         document.getElementById("panel" + step).classList.add("active");
         setDot(step);
         document.getElementById("message").textContent = "";
       }
 
+      // Auto-advance on selecting type
       function selectType(type) {
         mediaType = type;
         document.getElementById("typeVideo").classList.toggle("selected", type === "video");
         document.getElementById("typeAudio").classList.toggle("selected", type === "audio");
+        // update link question wording
+        document.getElementById("linkQuestion").textContent =
+          type === "audio" ? "Paste the audio link that inspired you"
+                            : "Paste the video link that inspired you";
+        setTimeout(() => showPanel(1), 300); // gentle auto-advance
+      }
+
+      function detectPlatform() {
+        const link = document.getElementById("mediaLink").value.trim();
+        const detected = document.getElementById("detected");
+        platform = detectFromLink(link);
+
+        if (link === "") { detected.textContent = ""; detected.className = "detected"; return; }
+
+        if (platform && platforms[platform]) {
+          detected.textContent = "Detected: " + platforms[platform].name + " ✓";
+          detected.className = "detected ok";
+        } else {
+          detected.textContent = "Hmm, I don’t recognise this platform — but you can still paste a transcript manually.";
+          detected.className = "detected warn";
+        }
+        // refresh help steps if user already asked for guidance
+        if (helpChoice === "yes") buildHelp();
       }
 
       function selectHelp(choice) {
         helpChoice = choice;
         document.getElementById("helpNo").classList.toggle("selected", choice === "no");
         document.getElementById("helpYes").classList.toggle("selected", choice === "yes");
+        document.getElementById("transcriptArea").style.display = "block";
 
+        if (choice === "yes") buildHelp();
+        else document.getElementById("helpBox").classList.remove("show");
+      }
+
+      function buildHelp() {
         const helpBox = document.getElementById("helpBox");
-        const transcriptArea = document.getElementById("transcriptArea");
         const steps = document.getElementById("helpSteps");
+        const kind = document.getElementById("helpKind");
+        const title = document.getElementById("helpTitle");
 
-        // Always show transcript box once a choice is made
-        transcriptArea.style.display = "block";
+        helpBox.classList.add("show");
+        steps.innerHTML = "";
+        kind.style.display = "none";
+        kind.textContent = "";
 
-        if (choice === "yes") {
-          helpBox.classList.add("show");
-          let list = "";
-          if (mediaType === "audio") {
-            list = `
-              <li>Open the audio/podcast on its platform (e.g., Spotify, Apple Podcasts, or a YouTube audio).</li>
-              <li>Look for a “Transcript” option (many podcast apps now show one).</li>
-              <li>If none exists, play it in the YouTube app/website version if available.</li>
-              <li>Select the transcript text, copy it, and paste it below.</li>`;
+        if (platform && platforms[platform]) {
+          const p = platforms[platform];
+          title.textContent = "How to copy the transcript from " + p.name;
+          if (p.hasTranscript) {
+            steps.innerHTML = p.steps.map(s => "<li>" + s + "</li>").join("");
           } else {
-            list = `
-              <li>Open the video on YouTube.</li>
-              <li>Click the “…more” below the video, then “Show transcript”.</li>
-              <li>A transcript panel opens on the right side.</li>
-              <li>Select all the text, copy it, and paste it below.</li>`;
+            kind.style.display = "block";
+            kind.textContent = p.kind;
           }
-          steps.innerHTML = list;
         } else {
-          helpBox.classList.remove("show");
+          title.textContent = "A gentle note";
+          kind.style.display = "block";
+          kind.textContent =
+            "I don’t yet recognise this platform. Many services don’t offer copyable transcripts. " +
+            "If possible, find the same talk on YouTube or the creator’s website, copy the transcript there, and paste it below. " +
+            "If you already have the transcript another way, simply paste it below.";
         }
       }
 
       function goTo(step) {
-        // Validation as user moves forward
-        if (step === 1 && mediaType === "") {
-          flash("Please choose Video or Audio first.");
-          return;
-        }
+        if (step === 1 && mediaType === "") { flash("Please choose Video or Audio first."); return; }
         if (step === 2) {
           const link = document.getElementById("mediaLink").value.trim();
-          if (link === "") {
-            flash("Please paste the link before continuing.");
-            return;
-          }
+          if (link === "") { flash("Please paste the link before continuing."); return; }
         }
         if (step === 3) {
-          if (helpChoice === "") {
-            flash("Please tell me if you have the transcript or need help.");
-            return;
-          }
+          if (helpChoice === "") { flash("Please tell me if you have the transcript or need help."); return; }
           const transcript = document.getElementById("transcript").value.trim();
-          if (transcript === "") {
-            flash("Please paste the transcript before continuing.");
-            return;
-          }
+          if (transcript === "") { flash("Please paste the transcript before continuing."); return; }
         }
         showPanel(step);
       }
 
-      function flash(text) {
-        const m = document.getElementById("message");
-        m.textContent = text;
-      }
+      function flash(text) { document.getElementById("message").textContent = text; }
 
       function handleFinish() {
-        const link = document.getElementById("mediaLink").value.trim();
         const transcript = document.getElementById("transcript").value.trim();
-
         const chosen = [];
-        document.querySelectorAll("#optionsList input:checked")
-          .forEach(cb => chosen.push(cb.value));
-
-        if (chosen.length === 0) {
-          flash("Please choose at least one thing you'd like in your keepsake.");
-          return;
-        }
+        document.querySelectorAll("#optionsList input:checked").forEach(cb => chosen.push(cb.value));
+        if (chosen.length === 0) { flash("Please choose at least one thing you'd like in your keepsake."); return; }
 
         const loader = document.getElementById("loader");
-        loader.style.display = "flex";
-        flash("");
-
+        loader.style.display = "flex"; flash("");
         setTimeout(function () {
           loader.style.display = "none";
           const words = transcript.split(/\s+/).length;
           flash("Received " + words + " words • " + chosen.length +
                 " sections chosen. Next: turning this into your one-pager.");
-        }, 2000);
+        }, 1500);
       }
     </script>
   </body>
