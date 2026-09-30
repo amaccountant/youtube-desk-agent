@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Wisdom Keeper · Turn videos into wisdom you live by</title>
 
-    <!-- Elegant calligraphy + serif fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Dancing+Script:wght@500;700&display=swap"
@@ -13,11 +12,7 @@
     />
 
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
 
       body {
         font-family: "Cormorant Garamond", serif;
@@ -27,8 +22,6 @@
         align-items: center;
         padding: 24px;
         color: #3b322a;
-
-        /* Warm, paper-like breathing background */
         background:
           radial-gradient(circle at 20% 20%, #fdf6e9, transparent 60%),
           radial-gradient(circle at 80% 80%, #f6e7cf, transparent 60%),
@@ -45,11 +38,11 @@
 
       .card {
         position: relative;
-        background: rgba(255, 253, 247, 0.92);
+        background: rgba(255, 253, 247, 0.94);
         border: 1px solid rgba(160, 130, 90, 0.35);
         border-radius: 8px;
-        padding: 56px 44px;
-        max-width: 600px;
+        padding: 52px 44px;
+        max-width: 640px;
         width: 100%;
         text-align: center;
         box-shadow:
@@ -58,7 +51,6 @@
         animation: fadeIn 1.4s ease;
       }
 
-      /* subtle paper lines feel */
       .card::before {
         content: "";
         position: absolute;
@@ -73,156 +65,131 @@
         to { opacity: 1; transform: translateY(0); }
       }
 
-      /* Quill icon with soft glow */
       .quill {
-        width: 90px;
-        height: 90px;
-        margin: 0 auto 14px auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        width: 84px; height: 84px;
+        margin: 0 auto 10px auto;
+        display: flex; align-items: center; justify-content: center;
         border-radius: 50%;
         background: radial-gradient(circle, rgba(212,175,110,0.35), transparent 70%);
         animation: glow 6s ease-in-out infinite;
       }
-
       @keyframes glow {
         0%, 100% { transform: scale(1); opacity: 0.9; }
         50% { transform: scale(1.05); opacity: 1; }
       }
-
-      .quill svg { width: 46px; height: 46px; }
+      .quill svg { width: 44px; height: 44px; }
 
       h1 {
         font-family: "Dancing Script", cursive;
-        font-size: 46px;
-        font-weight: 700;
-        color: #7a5c2e;
-        margin-bottom: 6px;
-        line-height: 1.1;
+        font-size: 46px; font-weight: 700;
+        color: #7a5c2e; margin-bottom: 4px; line-height: 1.1;
       }
 
       .tagline {
-        font-size: 20px;
-        font-style: italic;
-        color: #8a7350;
-        margin-bottom: 26px;
+        font-size: 19px; font-style: italic;
+        color: #8a7350; margin-bottom: 22px;
       }
 
-      /* rotating inspiring quote */
       .quote {
-        font-size: 19px;
-        font-style: italic;
-        color: #6b5638;
-        min-height: 54px;
-        margin-bottom: 30px;
-        transition: opacity 0.8s ease;
-        line-height: 1.5;
+        font-size: 18px; font-style: italic;
+        color: #6b5638; min-height: 50px;
+        margin-bottom: 26px; transition: opacity 0.8s ease; line-height: 1.5;
       }
 
       .divider {
-        width: 80px;
-        height: 1px;
+        width: 80px; height: 1px;
         background: rgba(160, 130, 90, 0.5);
-        margin: 0 auto 28px auto;
-        position: relative;
+        margin: 0 auto 26px auto; position: relative;
       }
       .divider::after {
         content: "❦";
-        position: absolute;
-        top: -13px;
-        left: 50%;
+        position: absolute; top: -13px; left: 50%;
         transform: translateX(-50%);
-        color: #b08a4a;
-        font-size: 18px;
-        background: rgba(255, 253, 247, 0.92);
-        padding: 0 8px;
+        color: #b08a4a; font-size: 18px;
+        background: rgba(255, 253, 247, 0.94); padding: 0 8px;
       }
 
-      .label {
-        font-size: 18px;
-        color: #6b5638;
-        margin-bottom: 10px;
-        display: block;
+      /* Step blocks */
+      .step {
+        text-align: left;
+        margin-bottom: 22px;
+      }
+      .step-label {
+        display: flex; align-items: center; gap: 10px;
+        font-size: 19px; color: #6b5638; margin-bottom: 8px;
+      }
+      .step-number {
+        width: 28px; height: 28px; flex: none;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #b08a4a, #8a6d34);
+        color: #fffdf7; font-size: 15px;
+        display: flex; align-items: center; justify-content: center;
       }
 
-      input {
+      input, textarea {
         width: 100%;
-        padding: 15px 16px;
+        padding: 14px 16px;
         border: 1px solid rgba(140, 110, 70, 0.45);
         border-radius: 6px;
-        font-size: 17px;
+        font-size: 16px;
         font-family: "Cormorant Garamond", serif;
         background: #fffdf7;
         outline: none;
         transition: all 0.3s ease;
-        margin-bottom: 22px;
+        color: #3b322a;
       }
+      textarea { min-height: 150px; resize: vertical; line-height: 1.5; }
 
-      input:focus {
+      input:focus, textarea:focus {
         border-color: #b08a4a;
         box-shadow: 0 0 0 4px rgba(176, 138, 74, 0.15);
       }
 
+      .hint {
+        font-size: 15px; font-style: italic;
+        color: #a08c6a; margin-top: 6px;
+      }
+
       button {
-        width: 100%;
-        padding: 15px;
-        border: none;
-        border-radius: 6px;
-        font-size: 19px;
-        font-family: "Cormorant Garamond", serif;
-        letter-spacing: 0.5px;
-        color: #fffdf7;
-        cursor: pointer;
+        width: 100%; margin-top: 8px;
+        padding: 15px; border: none; border-radius: 6px;
+        font-size: 19px; font-family: "Cormorant Garamond", serif;
+        letter-spacing: 0.5px; color: #fffdf7; cursor: pointer;
         background: linear-gradient(135deg, #b08a4a, #8a6d34);
         transition: all 0.4s ease;
         box-shadow: 0 10px 24px rgba(138, 109, 52, 0.35);
       }
-
       button:hover {
         transform: translateY(-2px);
         box-shadow: 0 14px 28px rgba(138, 109, 52, 0.45);
       }
 
       .message {
-        margin-top: 22px;
-        font-size: 17px;
-        font-style: italic;
-        color: #6b5638;
-        min-height: 24px;
+        margin-top: 20px; font-size: 17px;
+        font-style: italic; color: #6b5638; min-height: 24px;
       }
 
       .loader {
-        display: none;
-        margin-top: 22px;
-        justify-content: center;
-        gap: 8px;
+        display: none; margin-top: 20px;
+        justify-content: center; gap: 8px;
       }
       .loader span {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: #b08a4a;
-        animation: bounce 0.6s infinite alternate;
+        width: 10px; height: 10px; border-radius: 50%;
+        background: #b08a4a; animation: bounce 0.6s infinite alternate;
       }
       .loader span:nth-child(2) { animation-delay: 0.2s; }
       .loader span:nth-child(3) { animation-delay: 0.4s; }
-      @keyframes bounce {
-        to { transform: translateY(-10px); opacity: 0.5; }
-      }
+      @keyframes bounce { to { transform: translateY(-10px); opacity: 0.5; } }
 
       .footer {
-        margin-top: 32px;
-        font-size: 15px;
-        font-style: italic;
-        color: #a08c6a;
+        margin-top: 30px; font-size: 15px;
+        font-style: italic; color: #a08c6a;
       }
     </style>
   </head>
 
   <body>
     <div class="card">
-      <!-- Hand-drawn style quill (SVG) -->
       <div class="quill">
         <svg viewBox="0 0 24 24" fill="none" stroke="#7a5c2e" stroke-width="1.4"
              stroke-linecap="round" stroke-linejoin="round">
@@ -239,12 +206,33 @@
 
       <div class="divider"></div>
 
-      <label class="label" for="youtubeLink">Paste the link of a video that inspired you</label>
-      <input
-        type="text"
-        id="youtubeLink"
-        placeholder="https://www.youtube.com/watch?v=..."
-      />
+      <!-- Step 1: YouTube link -->
+      <div class="step">
+        <div class="step-label">
+          <span class="step-number">1</span>
+          <span>Paste the link of a video that inspired you</span>
+        </div>
+        <input
+          type="text"
+          id="youtubeLink"
+          placeholder="https://www.youtube.com/watch?v=..."
+        />
+      </div>
+
+      <!-- Step 2: Transcript -->
+      <div class="step">
+        <div class="step-label">
+          <span class="step-number">2</span>
+          <span>Paste the video transcript</span>
+        </div>
+        <textarea
+          id="transcript"
+          placeholder="Paste the transcript of the video here..."
+        ></textarea>
+        <p class="hint">
+          Tip: On YouTube, click “…” below the video → “Show transcript”, then copy and paste it here.
+        </p>
+      </div>
 
       <button onclick="handleClick()">Capture the Wisdom ✒</button>
 
@@ -258,7 +246,6 @@
     </div>
 
     <script>
-      // Rotating inspiring quotes to set the mood
       const quotes = [
         "“Knowing is not enough; we must apply.” — Goethe",
         "“What we learn with pleasure we never forget.”",
@@ -278,19 +265,19 @@
           qIndex = (qIndex + 1) % quotes.length;
         }, 500);
       }
-
       showQuote();
       setInterval(showQuote, 5000);
 
       function handleClick() {
         const link = document.getElementById("youtubeLink").value;
+        const transcript = document.getElementById("transcript").value;
         const message = document.getElementById("message");
         const loader = document.getElementById("loader");
 
         message.textContent = "";
 
-        if (link.trim() === "") {
-          message.textContent = "Please paste a link to a video that inspired you.";
+        if (transcript.trim() === "") {
+          message.textContent = "Please paste the transcript so I can capture its wisdom.";
           return;
         }
 
@@ -298,7 +285,9 @@
 
         setTimeout(function () {
           loader.style.display = "none";
-          message.textContent = "Your wisdom is being prepared… (next steps coming soon).";
+          message.textContent =
+            "I have received " + transcript.trim().split(/\s+/).length +
+            " words of wisdom. Next: turning them into your one-pager.";
         }, 2000);
       }
     </script>
