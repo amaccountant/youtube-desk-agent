@@ -65,7 +65,8 @@
 
       label.field-label { display:block; font-size:18px; color:#6b5638; margin:6px 0 8px; }
 
-      input, textarea { width:100%; padding:14px 16px; border:1px solid rgba(140,110,70,0.45); border-radius:6px;
+      input[type=text], input[type=password], textarea {
+        width:100%; padding:14px 16px; border:1px solid rgba(140,110,70,0.45); border-radius:6px;
         font-size:16px; font-family:"Cormorant Garamond",serif; background:#fffdf7; outline:none; color:#3b322a; transition:all .3s ease; }
       textarea { min-height:150px; resize:vertical; line-height:1.5; }
       input:focus, textarea:focus { border-color:#b08a4a; box-shadow:0 0 0 4px rgba(176,138,74,0.15); }
@@ -83,13 +84,17 @@
       .help-box ol { padding-left:20px; color:#6b5638; font-size:16px; line-height:1.7; }
       .help-box .kind { color:#b45b3e; font-size:16px; line-height:1.6; }
 
+      /* ---------- Fixed checkbox layout (no flicker) ---------- */
       .options { display:grid; grid-template-columns:1fr 1fr; gap:10px 18px; margin-bottom:8px; }
       @media (max-width:480px){ .options { grid-template-columns:1fr; } .choices{flex-direction:column;} }
-      .opt { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid rgba(140,110,70,0.3);
-        border-radius:6px; background:#fffdf7; cursor:pointer; transition:border-color .25s ease; font-size:17px; color:#4a3c28;
-        user-select:none; }
+      .opt {
+        display:flex; align-items:center; gap:10px; padding:10px 12px;
+        border:1px solid rgba(140,110,70,0.3); border-radius:6px; background:#fffdf7;
+        transition:border-color .2s ease;
+      }
       .opt:hover { border-color:#b08a4a; }
-      .opt input { width:auto; accent-color:#b08a4a; cursor:pointer; }
+      .opt input[type=checkbox] { width:18px; height:18px; accent-color:#b08a4a; cursor:pointer; flex:none; }
+      .opt label { font-size:17px; color:#4a3c28; cursor:pointer; user-select:none; }
       .recommended { font-size:14px; font-style:italic; color:#8a6d34; margin-left:4px; }
 
       .nav { display:flex; gap:12px; margin-top:26px; }
@@ -100,6 +105,7 @@
       button.secondary { background:transparent; color:#8a6d34; border:1px solid rgba(140,110,70,0.5); box-shadow:none; }
 
       .message { margin-top:20px; font-size:17px; font-style:italic; color:#b45b3e; min-height:22px; text-align:center; }
+      .subtle { color:#8a7350 !important; }
 
       .loader { display:none; margin-top:20px; justify-content:center; gap:8px; }
       .loader span { width:10px;height:10px;border-radius:50%;background:#b08a4a;animation:bounce .6s infinite alternate; }
@@ -214,19 +220,19 @@
         </div>
       </div>
 
-      <!-- PANEL 4: Choose outputs -->
+      <!-- PANEL 4: Choose outputs (fixed, no nesting) -->
       <div class="panel" id="panel4">
         <p class="question">What would you like in your keepsake?</p>
         <div class="options" id="optionsList">
-          <label class="opt"><input type="checkbox" value="Main idea" /> Main idea</label>
-          <label class="opt"><input type="checkbox" value="Five key messages" /> Five key messages</label>
-          <label class="opt"><input type="checkbox" value="Practical applications" /> Practical applications</label>
-          <label class="opt"><input type="checkbox" value="Start doing" /> Start doing</label>
-          <label class="opt"><input type="checkbox" value="Stop doing" /> Stop doing</label>
-          <label class="opt"><input type="checkbox" value="Daily checklist" /> Daily checklist</label>
-          <label class="opt"><input type="checkbox" value="Reflection question" /> Reflection question</label>
-          <label class="opt"><input type="checkbox" value="Limitations" /> Limitations</label>
-          <label class="opt"><input type="checkbox" value="One page summary" checked /> One-page summary<span class="recommended">(recommended)</span></label>
+          <div class="opt"><input type="checkbox" id="c1" value="Main idea"><label for="c1">Main idea</label></div>
+          <div class="opt"><input type="checkbox" id="c2" value="Five key messages"><label for="c2">Five key messages</label></div>
+          <div class="opt"><input type="checkbox" id="c3" value="Practical applications"><label for="c3">Practical applications</label></div>
+          <div class="opt"><input type="checkbox" id="c4" value="Start doing"><label for="c4">Start doing</label></div>
+          <div class="opt"><input type="checkbox" id="c5" value="Stop doing"><label for="c5">Stop doing</label></div>
+          <div class="opt"><input type="checkbox" id="c6" value="Daily checklist"><label for="c6">Daily checklist</label></div>
+          <div class="opt"><input type="checkbox" id="c7" value="Reflection question"><label for="c7">Reflection question</label></div>
+          <div class="opt"><input type="checkbox" id="c8" value="Limitations"><label for="c8">Limitations</label></div>
+          <div class="opt"><input type="checkbox" id="c9" value="One page summary" checked><label for="c9">One-page summary<span class="recommended">(recommended)</span></label></div>
         </div>
         <div class="nav">
           <button class="secondary" onclick="showPanel(3)">← Back</button>
@@ -252,7 +258,7 @@
       let mediaType = "";
       let helpChoice = "";
       let platform = "";
-      let chosenModel = "";   // discovered from your key
+      let workingModel = "";   // remembered once we find one that works
 
       const platforms = {
         youtube: { name:"YouTube", hasTranscript:true, steps:[
@@ -378,7 +384,11 @@
         showPanel(step);
       }
 
-      function flash(text) { document.getElementById("message").textContent = text; }
+      function flash(text, subtle) {
+        const m = document.getElementById("message");
+        m.textContent = text;
+        m.classList.toggle("subtle", !!subtle);
+      }
 
       function buildPrompt(transcript, chosen) {
         return `You are a wise, warm life-coaching assistant called Wisdom Keeper.
@@ -403,61 +413,99 @@ TRANSCRIPT:
 ${transcript}`;
       }
 
-      // Ask Google which models this key can use, then pick a good one
-      async function discoverModel(key) {
-        if (chosenModel) return chosenModel;
+      // Get the list of models the key can access, ordered newest-first
+      async function getModelCandidates(key) {
         try {
           const url = "https://generativelanguage.googleapis.com/v1beta/models?key=" + key;
           const res = await fetch(url);
           const data = await res.json();
           if (data.error) return { error: data.error.message };
 
-          const usable = (data.models || []).filter(m =>
-            m.supportedGenerationMethods &&
-            m.supportedGenerationMethods.includes("generateContent")
-          );
+          let usable = (data.models || [])
+            .filter(m => m.supportedGenerationMethods &&
+                         m.supportedGenerationMethods.includes("generateContent"))
+            .map(m => m.name.replace(/^models\//, ""))
+            .filter(n => !/vision|image|embedding|aqa/i.test(n));
 
-          // Prefer a "flash" model (fast + free-friendly), else any usable one
-          let pick = usable.find(m => /flash/i.test(m.name) && !/vision|image|embedding/i.test(m.name));
-          if (!pick) pick = usable.find(m => !/vision|image|embedding/i.test(m.name));
-          if (!pick && usable.length) pick = usable[0];
+          // Prefer flash models, and higher version numbers first
+          usable.sort((a, b) => {
+            const fa = /flash/i.test(a) ? 0 : 1;
+            const fb = /flash/i.test(b) ? 0 : 1;
+            if (fa !== fb) return fa - fb;
+            return b.localeCompare(a); // rough newest-first
+          });
 
-          if (!pick) return { error: "No text models are available for this key." };
-
-          // m.name looks like "models/gemini-2.5-flash" — strip the prefix
-          chosenModel = pick.name.replace(/^models\//, "");
-          return chosenModel;
+          return { list: usable };
         } catch (e) {
           return { error: e.message };
         }
       }
 
+      // Try a single model
+      async function tryModel(key, model, prompt) {
+        const url = "https://generativelanguage.googleapis.com/v1beta/models/"
+          + model + ":generateContent?key=" + key;
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        });
+        return await response.json();
+      }
+
+      // Extract a suggested model name from an error message, if any
+      function extractSuggested(msg) {
+        if (!msg) return "";
+        const m = msg.match(/models\/([a-zA-Z0-9.\-]+)/g);
+        if (!m) return "";
+        // Return the last mentioned model (usually the suggested replacement)
+        return m[m.length - 1].replace(/^models\//, "");
+      }
+
       async function callGemini(key, prompt) {
-        const model = await discoverModel(key);
-        if (model && model.error) return { error: model.error };
-
-        try {
-          const url = "https://generativelanguage.googleapis.com/v1beta/models/"
-            + model + ":generateContent?key=" + key;
-          const response = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-          });
-          const data = await response.json();
-          if (data.error) return { error: data.error.message };
-
-          const text =
-            data.candidates &&
-            data.candidates[0] &&
-            data.candidates[0].content &&
-            data.candidates[0].content.parts[0].text;
-
-          if (!text) return { error: "No readable response was returned." };
-          return { text: text, model: model };
-        } catch (e) {
-          return { error: e.message };
+        // If we already found a working model, use it
+        if (workingModel) {
+          const data = await tryModel(key, workingModel, prompt);
+          if (!data.error) {
+            const t = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (t) return { text: t };
+          }
+          workingModel = ""; // it stopped working; rediscover
         }
+
+        const disc = await getModelCandidates(key);
+        if (disc.error) return { error: disc.error };
+
+        let candidates = disc.list.slice();
+        const tried = new Set();
+        let lastError = "No available model responded.";
+
+        // Try up to a reasonable number of models
+        for (let i = 0; i < candidates.length + 3; i++) {
+          const model = candidates.shift();
+          if (!model || tried.has(model)) continue;
+          tried.add(model);
+
+          flash("Preparing your wisdom…", true);
+          const data = await tryModel(key, model, prompt);
+
+          if (!data.error) {
+            const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (text) { workingModel = model; return { text: text }; }
+            lastError = "Empty response from " + model;
+            continue;
+          }
+
+          lastError = data.error.message;
+
+          // If the error suggests another model, try that next
+          const suggested = extractSuggested(data.error.message);
+          if (suggested && !tried.has(suggested)) {
+            candidates.unshift(suggested);
+          }
+        }
+
+        return { error: lastError };
       }
 
       async function handleFinish() {
@@ -485,6 +533,7 @@ ${transcript}`;
         document.getElementById("wisdomText").textContent = result.text;
         document.getElementById("results").style.display = "block";
         setDot(4);
+        flash("");
       }
 
       function startOver() {
