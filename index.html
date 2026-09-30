@@ -3,24 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- Prevent caching so users always get the newest version -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-
     <title>Wisdom Keeper · Turn videos into wisdom you live by</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Dancing+Script:wght@500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Dancing+Script:wght@500;700&family=Poppins:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Free PDF tool -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
+      :root {
+        --accent: #14808c;      /* strong teal accent */
+        --accent-dark: #0c5b64;
+        --ink: #2b2620;
+        --paper: #fffdf7;
+        --gold: #b08a4a;
+      }
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body {
         font-family: "Cormorant Garamond", serif;
@@ -37,53 +39,49 @@
       .card {
         position: relative; background: rgba(255,253,247,0.94);
         border: 1px solid rgba(160,130,90,0.35); border-radius: 8px;
-        padding: 50px 44px; max-width: 760px; width: 100%; text-align: center;
+        padding: 46px 40px; max-width: 780px; width: 100%; text-align: center;
         box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 30px 60px rgba(90,70,40,0.18);
         animation: fadeIn 1.2s ease;
       }
       .card::before { content:""; position:absolute; inset:12px; border:1px solid rgba(160,130,90,0.25); border-radius:4px; pointer-events:none; }
       @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
 
-      .quill { width:78px;height:78px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;border-radius:50%;
+      .quill { width:74px;height:74px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;border-radius:50%;
         background:radial-gradient(circle, rgba(212,175,110,0.35), transparent 70%); animation:glow 6s ease-in-out infinite; }
       @keyframes glow { 0%,100%{transform:scale(1);opacity:.9;} 50%{transform:scale(1.05);opacity:1;} }
-      .quill svg { width:42px; height:42px; }
+      .quill svg { width:40px; height:40px; }
 
-      h1 { font-family:"Dancing Script",cursive; font-size:44px; font-weight:700; color:#7a5c2e; line-height:1.1; }
-      .tagline { font-size:18px; font-style:italic; color:#8a7350; margin-bottom:18px; }
+      h1 { font-family:"Dancing Script",cursive; font-size:42px; font-weight:700; color:#7a5c2e; line-height:1.1; }
+      .tagline { font-size:18px; font-style:italic; color:#8a7350; margin-bottom:16px; }
 
-      .progress { display:flex; justify-content:center; gap:8px; margin-bottom:22px; }
+      .progress { display:flex; justify-content:center; gap:8px; margin-bottom:20px; }
       .dot { width:9px;height:9px;border-radius:50%;background:rgba(160,130,90,0.35);transition:all .3s ease; }
-      .dot.active { background:#b08a4a; transform:scale(1.3); }
+      .dot.active { background:var(--gold); transform:scale(1.3); }
 
-      .divider { width:80px;height:1px;background:rgba(160,130,90,0.5);margin:0 auto 26px;position:relative; }
-      .divider::after { content:"❦";position:absolute;top:-13px;left:50%;transform:translateX(-50%);color:#b08a4a;font-size:18px;background:rgba(255,253,247,0.94);padding:0 8px; }
+      .divider { width:80px;height:1px;background:rgba(160,130,90,0.5);margin:0 auto 24px;position:relative; }
+      .divider::after { content:"❦";position:absolute;top:-13px;left:50%;transform:translateX(-50%);color:var(--gold);font-size:18px;background:rgba(255,253,247,0.94);padding:0 8px; }
 
       .panel { display:none; animation:fadeIn .5s ease; text-align:left; }
       .panel.active { display:block; }
-
       .question { font-size:22px; color:#6b5638; margin-bottom:18px; text-align:center; line-height:1.4; }
 
       .choices { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:10px; }
       .choice { flex:1; min-width:130px; padding:22px 16px; border:1px solid rgba(140,110,70,0.4); border-radius:8px;
-        background:#fffdf7; cursor:pointer; transition:all .3s ease; text-align:center; }
-      .choice:hover { border-color:#b08a4a; transform:translateY(-2px); box-shadow:0 8px 18px rgba(138,109,52,0.2); }
-      .choice.selected { border-color:#b08a4a; background:#f7ecd6; box-shadow:0 0 0 3px rgba(176,138,74,0.18); }
+        background:var(--paper); cursor:pointer; transition:all .3s ease; text-align:center; }
+      .choice:hover { border-color:var(--gold); transform:translateY(-2px); box-shadow:0 8px 18px rgba(138,109,52,0.2); }
+      .choice.selected { border-color:var(--gold); background:#f7ecd6; box-shadow:0 0 0 3px rgba(176,138,74,0.18); }
       .choice .icon { font-size:30px; display:block; margin-bottom:8px; }
       .choice .text { font-size:19px; color:#6b5638; }
 
       label.field-label { display:block; font-size:18px; color:#6b5638; margin:6px 0 8px; }
-
       input[type=text], input[type=password], textarea {
         width:100%; padding:14px 16px; border:1px solid rgba(140,110,70,0.45); border-radius:6px;
-        font-size:16px; font-family:"Cormorant Garamond",serif; background:#fffdf7; outline:none; color:#3b322a; transition:all .3s ease; }
+        font-size:16px; font-family:"Cormorant Garamond",serif; background:var(--paper); outline:none; color:#3b322a; transition:all .3s ease; }
       textarea { min-height:150px; resize:vertical; line-height:1.5; }
-      input:focus, textarea:focus { border-color:#b08a4a; box-shadow:0 0 0 4px rgba(176,138,74,0.15); }
+      input:focus, textarea:focus { border-color:var(--gold); box-shadow:0 0 0 4px rgba(176,138,74,0.15); }
 
       .detected { font-size:16px; font-style:italic; margin-top:8px; min-height:22px; }
-      .detected.ok { color:#5a7a3e; }
-      .detected.warn { color:#b45b3e; }
-
+      .detected.ok { color:#5a7a3e; } .detected.warn { color:#b45b3e; }
       .hint { font-size:15px; font-style:italic; color:#a08c6a; margin-top:8px; }
       .hint a { color:#8a6d34; }
 
@@ -96,54 +94,94 @@
       .options { display:grid; grid-template-columns:1fr 1fr; gap:10px 18px; margin-bottom:8px; }
       @media (max-width:480px){ .options { grid-template-columns:1fr; } .choices{flex-direction:column;} }
       .opt { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid rgba(140,110,70,0.3);
-        border-radius:6px; background:#fffdf7; transition:border-color .2s ease; }
-      .opt:hover { border-color:#b08a4a; }
-      .opt input[type=checkbox] { width:18px; height:18px; accent-color:#b08a4a; cursor:pointer; flex:none; }
+        border-radius:6px; background:var(--paper); transition:border-color .2s ease; }
+      .opt:hover { border-color:var(--gold); }
+      .opt input[type=checkbox] { width:18px; height:18px; accent-color:var(--gold); cursor:pointer; flex:none; }
       .opt label { font-size:17px; color:#4a3c28; cursor:pointer; user-select:none; }
       .recommended { font-size:14px; font-style:italic; color:#8a6d34; margin-left:4px; }
 
-      .nav { display:flex; gap:12px; margin-top:26px; }
+      .nav { display:flex; gap:12px; margin-top:24px; }
       button { flex:1; padding:14px; border:none; border-radius:6px; font-size:18px; font-family:"Cormorant Garamond",serif;
-        letter-spacing:.5px; color:#fffdf7; cursor:pointer; background:linear-gradient(135deg,#b08a4a,#8a6d34);
+        letter-spacing:.5px; color:var(--paper); cursor:pointer; background:linear-gradient(135deg,var(--gold),#8a6d34);
         transition:all .4s ease; box-shadow:0 10px 24px rgba(138,109,52,0.35); }
       button:hover { transform:translateY(-2px); box-shadow:0 14px 28px rgba(138,109,52,0.45); }
       button.secondary { background:transparent; color:#8a6d34; border:1px solid rgba(140,110,70,0.5); box-shadow:none; }
+      button.accent { background:linear-gradient(135deg,var(--accent),var(--accent-dark)); box-shadow:0 10px 24px rgba(20,128,140,0.35); }
 
-      .message { margin-top:20px; font-size:17px; font-style:italic; color:#b45b3e; min-height:22px; text-align:center; }
+      .message { margin-top:18px; font-size:17px; font-style:italic; color:#b45b3e; min-height:22px; text-align:center; }
       .subtle { color:#8a7350 !important; }
 
-      .loader { display:none; margin-top:20px; justify-content:center; gap:8px; }
-      .loader span { width:10px;height:10px;border-radius:50%;background:#b08a4a;animation:bounce .6s infinite alternate; }
+      .loader { display:none; margin-top:18px; justify-content:center; gap:8px; }
+      .loader span { width:10px;height:10px;border-radius:50%;background:var(--gold);animation:bounce .6s infinite alternate; }
       .loader span:nth-child(2){animation-delay:.2s;} .loader span:nth-child(3){animation-delay:.4s;}
       @keyframes bounce { to { transform:translateY(-10px); opacity:.5; } }
 
-      /* ---------- Results / Keepsake ---------- */
       #results { display:none; margin-top:10px; animation:fadeIn .8s ease; }
-      #results h2 { font-family:"Dancing Script",cursive; font-size:32px; color:#7a5c2e; text-align:center; margin-bottom:10px; }
+      #results h2 { font-family:"Dancing Script",cursive; font-size:30px; color:#7a5c2e; text-align:center; margin-bottom:12px; }
 
-      /* The printable page */
-      .keepsake {
-        background:#fffdf7; border:2px solid #d9c290; border-radius:6px;
-        padding:34px 34px 28px; text-align:left;
-        box-shadow:0 10px 30px rgba(90,70,40,0.12);
+      /* Small preview scaling wrapper */
+      .preview-wrap { display:flex; justify-content:center; }
+      .preview-scale { transform:scale(0.62); transform-origin:top center; margin-bottom:-320px; }
+
+      /* ============ THE A4 ONE-PAGER (visual) ============ */
+      .onepager {
+        width: 794px;            /* A4 width at 96dpi */
+        min-height: 1123px;      /* A4 height */
+        background: var(--paper);
+        font-family: "Poppins", sans-serif;
+        color: var(--ink);
+        padding: 0; position: relative; overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
       }
-      .k-header { text-align:center; border-bottom:1px solid #e2d3ad; padding-bottom:14px; margin-bottom:18px; }
-      .k-title { font-family:"Dancing Script",cursive; font-size:34px; color:#7a5c2e; }
-      .k-sub { font-size:15px; font-style:italic; color:#a08c6a; margin-top:4px; }
-
-      .section { margin-bottom:16px; }
-      .section h3 {
-        font-size:19px; color:#7a5c2e; letter-spacing:.3px;
-        border-left:4px solid #b08a4a; padding-left:10px; margin-bottom:6px;
-        text-transform:capitalize;
+      .op-top {
+        background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+        color: #fff; padding: 40px 46px 34px;
       }
-      .section .body { font-size:16px; line-height:1.6; color:#4a3c28; white-space:pre-wrap; padding-left:14px; }
-      .section .body .check { display:block; }
+      .op-kicker { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; opacity: .9; }
+      .op-headline { font-size: 46px; font-weight: 800; line-height: 1.05; margin-top: 8px; }
+      .op-sub { font-size: 17px; font-weight: 400; margin-top: 12px; max-width: 78%; opacity: .95; }
 
-      .k-footer { text-align:center; border-top:1px solid #e2d3ad; padding-top:12px; margin-top:8px;
-        font-size:13px; font-style:italic; color:#a08c6a; }
+      .op-quote {
+        margin: 0 46px; margin-top: -22px; background:#fff; border-left: 6px solid var(--gold);
+        padding: 18px 22px; font-family:"Cormorant Garamond",serif; font-style: italic;
+        font-size: 21px; color: var(--ink); box-shadow: 0 8px 24px rgba(0,0,0,0.08); border-radius: 4px;
+      }
 
-      .footer { margin-top:28px; font-size:15px; font-style:italic; color:#a08c6a; text-align:center; }
+      .op-section-title {
+        font-size: 15px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent-dark);
+        font-weight: 700; margin: 30px 46px 14px; border-bottom: 2px solid #e7dcc2; padding-bottom: 8px;
+      }
+
+      .op-points { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 0 46px; }
+      .op-point {
+        background: #fbf6 ea; background:#fbf6ea; border: 1px solid #ecdfbf; border-radius: 10px;
+        padding: 16px 16px 16px 14px; display: flex; gap: 12px; align-items: flex-start;
+      }
+      .op-badge {
+        width: 44px; height: 44px; flex: none; border-radius: 12px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+        display: flex; align-items: center; justify-content: center; font-size: 24px;
+      }
+      .op-point .pt-title { font-weight: 700; font-size: 16px; color: var(--accent-dark); }
+      .op-point .pt-text { font-size: 14px; line-height: 1.5; margin-top: 3px; color: #4a4238; }
+
+      .op-flow { display: flex; align-items: stretch; gap: 0; margin: 0 46px; }
+      .op-step { flex: 1; text-align: center; position: relative; padding: 6px 8px; }
+      .op-step .num {
+        width: 46px; height: 46px; margin: 0 auto 8px; border-radius: 50%;
+        background: var(--gold); color: #fff; font-weight: 800; font-size: 20px;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .op-step .st-label { font-weight: 700; font-size: 14px; color: var(--accent-dark); text-transform: uppercase; letter-spacing: 1px; }
+      .op-step .st-text { font-size: 13px; line-height: 1.45; margin-top: 4px; color: #4a4238; }
+      .op-arrow { display:flex; align-items:center; color: var(--gold); font-size: 26px; padding: 0 2px; }
+
+      .op-footer {
+        position: absolute; bottom: 0; left: 0; right: 0;
+        background: var(--accent-dark); color: #fff; text-align: center;
+        font-size: 13px; padding: 12px; letter-spacing: 1px;
+      }
+      .op-date { position:absolute; top: 18px; right: 24px; font-size: 12px; opacity:.85; }
     </style>
   </head>
 
@@ -160,13 +198,9 @@
       <p class="tagline">Turn the words that move you into wisdom you live by.</p>
 
       <div class="progress">
-        <div class="dot active" id="dot0"></div>
-        <div class="dot" id="dot1"></div>
-        <div class="dot" id="dot2"></div>
-        <div class="dot" id="dot3"></div>
-        <div class="dot" id="dot4"></div>
+        <div class="dot active" id="dot0"></div><div class="dot" id="dot1"></div>
+        <div class="dot" id="dot2"></div><div class="dot" id="dot3"></div><div class="dot" id="dot4"></div>
       </div>
-
       <div class="divider"></div>
 
       <!-- PANEL 0: API key -->
@@ -174,31 +208,20 @@
         <p class="question">First, connect your free wisdom engine</p>
         <label class="field-label">Your Google Gemini API key</label>
         <input type="password" id="apiKey" placeholder="Paste your Gemini API key here" />
-        <p class="hint">
-          Your key stays only in your own browser — it is never sent to us or stored online.
-          Don’t have one? Get a free key at
-          <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a>.
-        </p>
-        <div class="nav">
-          <button onclick="saveKey()">Continue →</button>
-        </div>
+        <p class="hint">Your key stays only in your own browser. Don’t have one? Get a free key at
+          <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a>.</p>
+        <div class="nav"><button onclick="saveKey()">Continue →</button></div>
       </div>
 
       <!-- PANEL 1: Audio or Video -->
       <div class="panel" id="panel1">
         <p class="question">What kind of wisdom did you find?</p>
         <div class="choices">
-          <div class="choice" id="typeVideo" onclick="selectType('video')">
-            <span class="icon">🎬</span><span class="text">A Video</span>
-          </div>
-          <div class="choice" id="typeAudio" onclick="selectType('audio')">
-            <span class="icon">🎧</span><span class="text">An Audio</span>
-          </div>
+          <div class="choice" id="typeVideo" onclick="selectType('video')"><span class="icon">🎬</span><span class="text">A Video</span></div>
+          <div class="choice" id="typeAudio" onclick="selectType('audio')"><span class="icon">🎧</span><span class="text">An Audio</span></div>
         </div>
         <p class="hint" style="text-align:center;">Select one to continue automatically.</p>
-        <div class="nav">
-          <button class="secondary" onclick="showPanel(0)">← Back</button>
-        </div>
+        <div class="nav"><button class="secondary" onclick="showPanel(0)">← Back</button></div>
       </div>
 
       <!-- PANEL 2: Link -->
@@ -207,40 +230,26 @@
         <label class="field-label">Link</label>
         <input type="text" id="mediaLink" placeholder="https://..." oninput="detectPlatform()" />
         <p class="detected" id="detected"></p>
-        <div class="nav">
-          <button class="secondary" onclick="showPanel(1)">← Back</button>
-          <button onclick="goTo(3)">Continue →</button>
-        </div>
+        <div class="nav"><button class="secondary" onclick="showPanel(1)">← Back</button><button onclick="goTo(3)">Continue →</button></div>
       </div>
 
       <!-- PANEL 3: Transcript -->
       <div class="panel" id="panel3">
         <p class="question">Do you already have the transcript?</p>
         <div class="choices">
-          <div class="choice" id="helpNo" onclick="selectHelp('no')">
-            <span class="icon">✔</span><span class="text">Yes, I have it</span>
-          </div>
-          <div class="choice" id="helpYes" onclick="selectHelp('yes')">
-            <span class="icon">🧭</span><span class="text">No, guide me</span>
-          </div>
+          <div class="choice" id="helpNo" onclick="selectHelp('no')"><span class="icon">✔</span><span class="text">Yes, I have it</span></div>
+          <div class="choice" id="helpYes" onclick="selectHelp('yes')"><span class="icon">🧭</span><span class="text">No, guide me</span></div>
         </div>
-
         <div class="help-box" id="helpBox">
           <h4 id="helpTitle">How to copy the transcript</h4>
           <ol id="helpSteps"></ol>
           <p class="kind" id="helpKind" style="display:none;"></p>
         </div>
-
         <div id="transcriptArea" style="display:none; margin-top:16px;">
           <label class="field-label">Paste the transcript here</label>
           <textarea id="transcript" placeholder="Paste the transcript here..."></textarea>
-          <p class="hint">Every meaningful word helps me craft better wisdom for you.</p>
         </div>
-
-        <div class="nav">
-          <button class="secondary" onclick="showPanel(2)">← Back</button>
-          <button onclick="goTo(4)">Continue →</button>
-        </div>
+        <div class="nav"><button class="secondary" onclick="showPanel(2)">← Back</button><button onclick="goTo(4)">Continue →</button></div>
       </div>
 
       <!-- PANEL 4: Choose outputs -->
@@ -257,10 +266,7 @@
           <div class="opt"><input type="checkbox" id="c8" value="Limitations"><label for="c8">Limitations</label></div>
           <div class="opt"><input type="checkbox" id="c9" value="One page summary" checked><label for="c9">One-page summary<span class="recommended">(recommended)</span></label></div>
         </div>
-        <div class="nav">
-          <button class="secondary" onclick="showPanel(3)">← Back</button>
-          <button onclick="handleFinish()">Capture the Wisdom ✒</button>
-        </div>
+        <div class="nav"><button class="secondary" onclick="showPanel(3)">← Back</button><button class="accent" onclick="handleFinish()">Create My Keepsake ✒</button></div>
       </div>
 
       <div class="loader" id="loader"><span></span><span></span><span></span></div>
@@ -268,370 +274,237 @@
 
       <!-- Results -->
       <div id="results">
-        <h2>Your Wisdom Keepsake</h2>
-
-        <!-- This is the printable area -->
-        <div class="keepsake" id="keepsake">
-          <div class="k-header">
-            <div class="k-title">Wisdom Keeper</div>
-            <div class="k-sub" id="keepsakeDate"></div>
-          </div>
-          <div id="keepsakeBody"></div>
-          <div class="k-footer">Captured with Wisdom Keeper · Review daily, live intentionally.</div>
-        </div>
+        <h2>Your Wisdom One-Pager</h2>
+        <div class="preview-wrap"><div class="preview-scale">
+          <!-- A4 one-pager rendered here -->
+          <div class="onepager" id="onepager"></div>
+        </div></div>
 
         <div class="nav">
-          <button onclick="downloadPDF()">⬇ Download PDF</button>
-          <button class="secondary" onclick="window.print()">🖨 Print</button>
+          <button class="accent" onclick="downloadOnePager()">⬇ Download One-Pager PDF</button>
         </div>
         <div class="nav">
           <button class="secondary" onclick="startOver()">↺ Capture another</button>
         </div>
       </div>
 
-      <p class="footer">Wisdom Keeper · Notes for a more intentional life</p>
+      <p class="hint" style="text-align:center; margin-top:20px;">Wisdom Keeper · Notes for a more intentional life</p>
     </div>
 
     <script>
-      let mediaType = "";
-      let helpChoice = "";
-      let platform = "";
-      let workingModel = "";
+      let mediaType="", helpChoice="", platform="", workingModel="";
+
+      const ICONS = {
+        brain:"🧠", clock:"⏳", target:"🎯", heart:"❤️", spark:"✨", growth:"🌱",
+        focus:"🔍", book:"📖", star:"⭐", fire:"🔥", key:"🔑", compass:"🧭",
+        lightbulb:"💡", muscle:"💪", mountain:"⛰️", seed:"🌰", sun:"☀️", check:"✅",
+        warning:"⚠️", speak:"🗣️", listen:"👂", write:"✍️", calm:"🧘", link:"🔗"
+      };
+      function iconFor(k){ if(!k) return "✨"; k=k.toLowerCase().trim(); return ICONS[k]||"✨"; }
 
       const platforms = {
-        youtube: { name:"YouTube", hasTranscript:true, steps:[
-          "Open the video on YouTube.",
-          "Click “…more” below the video, then “Show transcript”.",
-          "A transcript panel opens on the right.",
-          "Select all the text, copy it, and paste it below." ] },
-        spotify: { name:"Spotify", hasTranscript:false,
-          kind:"Spotify usually doesn’t allow copying transcripts. If this is a podcast, try the same episode on YouTube or the show’s official website, which often provide copyable transcripts." },
-        apple: { name:"Apple Podcasts", hasTranscript:false,
-          kind:"Apple Podcasts shows transcripts but doesn’t allow easy copying. Try the same episode on YouTube or the creator’s website for a copyable transcript, then paste it below." },
-        vimeo: { name:"Vimeo", hasTranscript:true, steps:[
-          "Open the video on Vimeo.",
-          "Click the “CC / Subtitles” icon to confirm captions exist.",
-          "If the creator enabled a transcript, it appears near the video.",
-          "Select the text, copy it, and paste it below." ] },
-        ted: { name:"TED", hasTranscript:true, steps:[
-          "Open the talk on TED.com.",
-          "Click the “Transcript” tab below the video.",
-          "Choose your language if prompted.",
-          "Select the text, copy it, and paste it below." ] }
+        youtube:{name:"YouTube",hasTranscript:true,steps:["Open the video on YouTube.","Click “…more” below the video, then “Show transcript”.","A transcript panel opens on the right.","Select all the text, copy it, and paste it below."]},
+        spotify:{name:"Spotify",hasTranscript:false,kind:"Spotify usually doesn’t allow copying transcripts. Try the same episode on YouTube or the show’s website for a copyable transcript."},
+        apple:{name:"Apple Podcasts",hasTranscript:false,kind:"Apple Podcasts doesn’t allow easy copying. Try the same episode on YouTube or the creator’s website, then paste it below."},
+        vimeo:{name:"Vimeo",hasTranscript:true,steps:["Open the video on Vimeo.","Click the CC/Subtitles icon to confirm captions exist.","If a transcript is enabled, it appears near the video.","Select the text, copy it, and paste it below."]},
+        ted:{name:"TED",hasTranscript:true,steps:["Open the talk on TED.com.","Click the “Transcript” tab below the video.","Choose your language if prompted.","Select the text, copy it, and paste it below."]}
       };
 
-      window.onload = function () {
-        const saved = localStorage.getItem("wk_gemini_key");
-        if (saved) document.getElementById("apiKey").value = saved;
-      };
+      window.onload=function(){ const s=localStorage.getItem("wk_gemini_key"); if(s) document.getElementById("apiKey").value=s; };
 
-      function detectFromLink(link) {
-        const l = link.toLowerCase();
-        if (l.includes("youtube.com") || l.includes("youtu.be")) return "youtube";
-        if (l.includes("spotify.com")) return "spotify";
-        if (l.includes("podcasts.apple.com")) return "apple";
-        if (l.includes("vimeo.com")) return "vimeo";
-        if (l.includes("ted.com")) return "ted";
-        return "";
-      }
+      function detectFromLink(link){ const l=link.toLowerCase();
+        if(l.includes("youtube.com")||l.includes("youtu.be"))return"youtube";
+        if(l.includes("spotify.com"))return"spotify";
+        if(l.includes("podcasts.apple.com"))return"apple";
+        if(l.includes("vimeo.com"))return"vimeo";
+        if(l.includes("ted.com"))return"ted"; return""; }
 
-      function setDot(step) {
-        for (let i = 0; i < 5; i++)
-          document.getElementById("dot" + i).classList.toggle("active", i <= step);
-      }
-      function showPanel(step) {
-        document.getElementById("results").style.display = "none";
-        for (let i = 0; i < 5; i++)
-          document.getElementById("panel" + i).classList.remove("active");
-        document.getElementById("panel" + step).classList.add("active");
-        setDot(step);
-        document.getElementById("message").textContent = "";
-      }
+      function setDot(step){ for(let i=0;i<5;i++) document.getElementById("dot"+i).classList.toggle("active", i<=step); }
+      function showPanel(step){ document.getElementById("results").style.display="none";
+        for(let i=0;i<5;i++) document.getElementById("panel"+i).classList.remove("active");
+        document.getElementById("panel"+step).classList.add("active"); setDot(step);
+        document.getElementById("message").textContent=""; }
 
-      function saveKey() {
-        const key = document.getElementById("apiKey").value.trim();
-        if (key === "") { flash("Please paste your Gemini API key to continue."); return; }
-        localStorage.setItem("wk_gemini_key", key);
-        showPanel(1);
-      }
+      function saveKey(){ const k=document.getElementById("apiKey").value.trim();
+        if(k===""){flash("Please paste your Gemini API key to continue.");return;}
+        localStorage.setItem("wk_gemini_key",k); showPanel(1); }
 
-      function selectType(type) {
-        mediaType = type;
-        document.getElementById("typeVideo").classList.toggle("selected", type === "video");
-        document.getElementById("typeAudio").classList.toggle("selected", type === "audio");
-        document.getElementById("linkQuestion").textContent =
-          type === "audio" ? "Paste the audio link that inspired you"
-                            : "Paste the video link that inspired you";
-        setTimeout(() => showPanel(2), 300);
-      }
+      function selectType(type){ mediaType=type;
+        document.getElementById("typeVideo").classList.toggle("selected",type==="video");
+        document.getElementById("typeAudio").classList.toggle("selected",type==="audio");
+        document.getElementById("linkQuestion").textContent = type==="audio"?"Paste the audio link that inspired you":"Paste the video link that inspired you";
+        setTimeout(()=>showPanel(2),300); }
 
-      function detectPlatform() {
-        const link = document.getElementById("mediaLink").value.trim();
-        const detected = document.getElementById("detected");
-        platform = detectFromLink(link);
-        if (link === "") { detected.textContent = ""; detected.className = "detected"; return; }
-        if (platform && platforms[platform]) {
-          detected.textContent = "Detected: " + platforms[platform].name + " ✓";
-          detected.className = "detected ok";
-        } else {
-          detected.textContent = "I don’t recognise this platform — but you can still paste a transcript manually.";
-          detected.className = "detected warn";
-        }
-        if (helpChoice === "yes") buildHelp();
-      }
+      function detectPlatform(){ const link=document.getElementById("mediaLink").value.trim();
+        const d=document.getElementById("detected"); platform=detectFromLink(link);
+        if(link===""){d.textContent="";d.className="detected";return;}
+        if(platform&&platforms[platform]){d.textContent="Detected: "+platforms[platform].name+" ✓";d.className="detected ok";}
+        else{d.textContent="I don’t recognise this platform — but you can still paste a transcript manually.";d.className="detected warn";}
+        if(helpChoice==="yes") buildHelp(); }
 
-      function selectHelp(choice) {
-        helpChoice = choice;
-        document.getElementById("helpNo").classList.toggle("selected", choice === "no");
-        document.getElementById("helpYes").classList.toggle("selected", choice === "yes");
-        document.getElementById("transcriptArea").style.display = "block";
-        if (choice === "yes") buildHelp();
-        else document.getElementById("helpBox").classList.remove("show");
-      }
+      function selectHelp(choice){ helpChoice=choice;
+        document.getElementById("helpNo").classList.toggle("selected",choice==="no");
+        document.getElementById("helpYes").classList.toggle("selected",choice==="yes");
+        document.getElementById("transcriptArea").style.display="block";
+        if(choice==="yes") buildHelp(); else document.getElementById("helpBox").classList.remove("show"); }
 
-      function buildHelp() {
-        const helpBox = document.getElementById("helpBox");
-        const steps = document.getElementById("helpSteps");
-        const kind = document.getElementById("helpKind");
-        const title = document.getElementById("helpTitle");
-        helpBox.classList.add("show");
-        steps.innerHTML = ""; kind.style.display = "none"; kind.textContent = "";
-        if (platform && platforms[platform]) {
-          const p = platforms[platform];
-          title.textContent = "How to copy the transcript from " + p.name;
-          if (p.hasTranscript) steps.innerHTML = p.steps.map(s => "<li>" + s + "</li>").join("");
-          else { kind.style.display = "block"; kind.textContent = p.kind; }
-        } else {
-          title.textContent = "A gentle note";
-          kind.style.display = "block";
-          kind.textContent =
-            "I don’t yet recognise this platform. If possible, find the same talk on YouTube or the creator’s website, copy the transcript there, and paste it below. If you already have the transcript, simply paste it below.";
-        }
-      }
+      function buildHelp(){ const hb=document.getElementById("helpBox"),steps=document.getElementById("helpSteps"),
+        kind=document.getElementById("helpKind"),title=document.getElementById("helpTitle");
+        hb.classList.add("show"); steps.innerHTML=""; kind.style.display="none"; kind.textContent="";
+        if(platform&&platforms[platform]){const p=platforms[platform]; title.textContent="How to copy the transcript from "+p.name;
+          if(p.hasTranscript) steps.innerHTML=p.steps.map(s=>"<li>"+s+"</li>").join(""); else {kind.style.display="block";kind.textContent=p.kind;}}
+        else{title.textContent="A gentle note";kind.style.display="block";
+          kind.textContent="I don’t yet recognise this platform. Try finding the same talk on YouTube or the creator’s website, copy the transcript there, and paste it below.";}}
 
-      function goTo(step) {
-        if (step === 3) {
-          const link = document.getElementById("mediaLink").value.trim();
-          if (link === "") { flash("Please paste the link before continuing."); return; }
-        }
-        if (step === 4) {
-          if (helpChoice === "") { flash("Please tell me if you have the transcript or need help."); return; }
-          const transcript = document.getElementById("transcript").value.trim();
-          if (transcript === "") { flash("Please paste the transcript before continuing."); return; }
-        }
+      function goTo(step){
+        if(step===3){const l=document.getElementById("mediaLink").value.trim(); if(l===""){flash("Please paste the link before continuing.");return;}}
+        if(step===4){if(helpChoice===""){flash("Please tell me if you have the transcript or need help.");return;}
+          const t=document.getElementById("transcript").value.trim(); if(t===""){flash("Please paste the transcript before continuing.");return;}}
         showPanel(step);
       }
 
-      function flash(text, subtle) {
-        const m = document.getElementById("message");
-        m.textContent = text;
-        m.classList.toggle("subtle", !!subtle);
-      }
+      function flash(text,subtle){const m=document.getElementById("message");m.textContent=text;m.classList.toggle("subtle",!!subtle);}
 
-      function buildPrompt(transcript, chosen) {
-        return `You are a wise, warm life-coaching assistant called Wisdom Keeper.
+      // Ask for a VISUAL one-pager as JSON
+      function buildPrompt(transcript){
+        const iconList = Object.keys(ICONS).join(", ");
+        return `You are Wisdom Keeper, a designer of beautiful one-page visual summaries.
 
-From the transcript below, create a concise, practical "desk keepsake".
-Use ONLY information supported by the transcript. Do NOT invent facts, quotes, or statistics.
-Write in a calm, encouraging, human tone.
+Read the transcript and distill its core wisdom into a JSON object for an infographic.
+Use ONLY ideas supported by the transcript. Do NOT invent facts.
 
-Return ONLY the following sections, each wrapped EXACTLY like this:
-###SECTION: <name>###
-<content>
+Return ONLY valid JSON (no markdown, no extra text) in EXACTLY this shape:
+{
+  "headline": "2-4 punchy words capturing the big idea",
+  "subhead": "one sentence (max 18 words) expanding the idea",
+  "quote": "a short memorable line (max 16 words) in the speaker's spirit",
+  "points": [
+    { "icon": "one word from the list", "title": "3-5 words", "text": "max 16 words" }
+  ],
+  "steps": [
+    { "label": "1-2 words", "text": "max 12 words" }
+  ]
+}
 
-Use these section names, in this order, and ONLY these:
-${chosen.map(c => "###SECTION: " + c + "###").join("\n")}
-
-Rules for content:
-- Keep it concise enough to fit on one printed page.
-- Use short lines and simple language.
-- For "Five key messages", give exactly five, each on its own line starting with a number.
-- For "Start doing" and "Stop doing", give 3 specific items, each on its own line starting with "- ".
-- For "Daily checklist", each line must start with "[ ] ".
-- For "Reflection question", give one meaningful question.
-- If something is unclear in the transcript, write "Not clearly stated in the source."
-- Do NOT add any text outside the ###SECTION### blocks.
+Rules:
+- Provide EXACTLY 4 points and EXACTLY 3 steps.
+- "icon" MUST be one of: ${iconList}. Pick the most fitting.
+- Keep every text field short and vivid — this is a visual poster, not an essay.
+- No line breaks inside any value.
 
 TRANSCRIPT:
 ${transcript}`;
       }
 
-      async function getModelCandidates(key) {
-        try {
-          const url = "https://generativelanguage.googleapis.com/v1beta/models?key=" + key;
-          const res = await fetch(url);
-          const data = await res.json();
-          if (data.error) return { error: data.error.message };
-          let usable = (data.models || [])
-            .filter(m => m.supportedGenerationMethods &&
-                         m.supportedGenerationMethods.includes("generateContent"))
-            .map(m => m.name.replace(/^models\//, ""))
-            .filter(n => !/vision|image|embedding|aqa/i.test(n));
-          usable.sort((a, b) => {
-            const fa = /flash/i.test(a) ? 0 : 1;
-            const fb = /flash/i.test(b) ? 0 : 1;
-            if (fa !== fb) return fa - fb;
-            return b.localeCompare(a);
-          });
-          return { list: usable };
-        } catch (e) { return { error: e.message }; }
+      async function getModelCandidates(key){ try{
+        const res=await fetch("https://generativelanguage.googleapis.com/v1beta/models?key="+key);
+        const data=await res.json(); if(data.error) return {error:data.error.message};
+        let usable=(data.models||[]).filter(m=>m.supportedGenerationMethods&&m.supportedGenerationMethods.includes("generateContent"))
+          .map(m=>m.name.replace(/^models\//,"")).filter(n=>!/vision|image|embedding|aqa/i.test(n));
+        usable.sort((a,b)=>{const fa=/flash/i.test(a)?0:1,fb=/flash/i.test(b)?0:1; if(fa!==fb)return fa-fb; return b.localeCompare(a);});
+        return {list:usable};
+      }catch(e){return {error:e.message};}}
+
+      async function tryModel(key,model,prompt){
+        const url="https://generativelanguage.googleapis.com/v1beta/models/"+model+":generateContent?key="+key;
+        const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})}); return await r.json();
+      }
+      function extractSuggested(msg){ if(!msg)return""; const m=msg.match(/models\/([a-zA-Z0-9.\-]+)/g); if(!m)return"";
+        return m[m.length-1].replace(/^models\//,""); }
+
+      async function callGemini(key,prompt){
+        if(workingModel){const d=await tryModel(key,workingModel,prompt);
+          if(!d.error){const t=d.candidates?.[0]?.content?.parts?.[0]?.text; if(t)return{text:t};} workingModel="";}
+        const disc=await getModelCandidates(key); if(disc.error)return{error:disc.error};
+        let cand=disc.list.slice(); const tried=new Set(); let last="No available model responded.";
+        for(let i=0;i<cand.length+3;i++){ const model=cand.shift(); if(!model||tried.has(model))continue; tried.add(model);
+          flash("Designing your one-pager…",true); const d=await tryModel(key,model,prompt);
+          if(!d.error){const t=d.candidates?.[0]?.content?.parts?.[0]?.text; if(t){workingModel=model;return{text:t};} last="Empty response from "+model; continue;}
+          last=d.error.message; const s=extractSuggested(d.error.message); if(s&&!tried.has(s))cand.unshift(s);
+        } return {error:last};
       }
 
-      async function tryModel(key, model, prompt) {
-        const url = "https://generativelanguage.googleapis.com/v1beta/models/"
-          + model + ":generateContent?key=" + key;
-        const response = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+      function parseJSON(text){
+        // strip code fences if any
+        let t=text.trim().replace(/^```json/i,"").replace(/^```/,"").replace(/```$/,"").trim();
+        // grab the outermost { ... }
+        const first=t.indexOf("{"), last=t.lastIndexOf("}");
+        if(first!==-1&&last!==-1) t=t.slice(first,last+1);
+        return JSON.parse(t);
+      }
+
+      function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+      function renderOnePager(data){
+        const now=new Date();
+        const points=(data.points||[]).slice(0,4);
+        const steps=(data.steps||[]).slice(0,3);
+
+        let pointsHTML=points.map(p=>`
+          <div class="op-point">
+            <div class="op-badge">${iconFor(p.icon)}</div>
+            <div><div class="pt-title">${esc(p.title)}</div><div class="pt-text">${esc(p.text)}</div></div>
+          </div>`).join("");
+
+        let stepsHTML="";
+        steps.forEach((s,i)=>{
+          stepsHTML+=`<div class="op-step"><div class="num">${i+1}</div>
+            <div class="st-label">${esc(s.label)}</div><div class="st-text">${esc(s.text)}</div></div>`;
+          if(i<steps.length-1) stepsHTML+=`<div class="op-arrow">➜</div>`;
         });
-        return await response.json();
+
+        document.getElementById("onepager").innerHTML=`
+          <div class="op-top">
+            <div class="op-date">${now.toLocaleDateString()}</div>
+            <div class="op-kicker">Wisdom Keeper · One-Pager</div>
+            <div class="op-headline">${esc(data.headline)}</div>
+            <div class="op-sub">${esc(data.subhead)}</div>
+          </div>
+          <div class="op-quote">“${esc(data.quote)}”</div>
+          <div class="op-section-title">Key Insights</div>
+          <div class="op-points">${pointsHTML}</div>
+          <div class="op-section-title">Put It Into Practice</div>
+          <div class="op-flow">${stepsHTML}</div>
+          <div class="op-footer">Captured with Wisdom Keeper · Review daily, live intentionally</div>
+        `;
       }
 
-      function extractSuggested(msg) {
-        if (!msg) return "";
-        const m = msg.match(/models\/([a-zA-Z0-9.\-]+)/g);
-        if (!m) return "";
-        return m[m.length - 1].replace(/^models\//, "");
+      async function handleFinish(){
+        const key=localStorage.getItem("wk_gemini_key");
+        if(!key){flash("Your key is missing. Please go back to the first step.");return;}
+        const transcript=document.getElementById("transcript").value.trim();
+        const loader=document.getElementById("loader"); loader.style.display="flex"; flash("");
+
+        const result=await callGemini(key, buildPrompt(transcript));
+        loader.style.display="none";
+        if(result.error){flash("The wisdom engine replied with an error: "+result.error);return;}
+
+        let data;
+        try { data=parseJSON(result.text); }
+        catch(e){ flash("I received wisdom but couldn’t format it. Please try again."); return; }
+
+        for(let i=0;i<5;i++) document.getElementById("panel"+i).classList.remove("active");
+        renderOnePager(data);
+        document.getElementById("results").style.display="block"; setDot(4); flash("");
       }
 
-      async function callGemini(key, prompt) {
-        if (workingModel) {
-          const data = await tryModel(key, workingModel, prompt);
-          if (!data.error) {
-            const t = data.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (t) return { text: t };
-          }
-          workingModel = "";
-        }
-        const disc = await getModelCandidates(key);
-        if (disc.error) return { error: disc.error };
-        let candidates = disc.list.slice();
-        const tried = new Set();
-        let lastError = "No available model responded.";
-        for (let i = 0; i < candidates.length + 3; i++) {
-          const model = candidates.shift();
-          if (!model || tried.has(model)) continue;
-          tried.add(model);
-          flash("Preparing your wisdom…", true);
-          const data = await tryModel(key, model, prompt);
-          if (!data.error) {
-            const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (text) { workingModel = model; return { text: text }; }
-            lastError = "Empty response from " + model;
-            continue;
-          }
-          lastError = data.error.message;
-          const suggested = extractSuggested(data.error.message);
-          if (suggested && !tried.has(suggested)) candidates.unshift(suggested);
-        }
-        return { error: lastError };
+      function downloadOnePager(){
+        const el=document.getElementById("onepager");
+        const opt={ margin:0, filename:"wisdom-onepager.pdf",
+          image:{type:"jpeg",quality:0.98},
+          html2canvas:{scale:2, backgroundColor:"#fffdf7", windowWidth:794},
+          jsPDF:{unit:"px", format:[794,1123], orientation:"portrait"} };
+        html2pdf().set(opt).from(el).save();
       }
 
-      // Turn AI text into styled section blocks
-      function renderKeepsake(text) {
-        const body = document.getElementById("keepsakeBody");
-        body.innerHTML = "";
-
-        // Split on ###SECTION: name###
-        const parts = text.split(/###SECTION:\s*/i).map(p => p.trim()).filter(Boolean);
-
-        if (parts.length === 0) {
-          // fallback: show raw text
-          const div = document.createElement("div");
-          div.className = "section";
-          div.innerHTML = '<div class="body">' + escapeHtml(text) + '</div>';
-          body.appendChild(div);
-          return;
-        }
-
-        parts.forEach(part => {
-          const idx = part.indexOf("###");
-          let name = part, content = "";
-          if (idx !== -1) {
-            name = part.slice(0, idx).trim();
-            content = part.slice(idx + 3).trim();
-          }
-          const section = document.createElement("div");
-          section.className = "section";
-
-          const h3 = document.createElement("h3");
-          h3.textContent = name;
-          section.appendChild(h3);
-
-          const bodyDiv = document.createElement("div");
-          bodyDiv.className = "body";
-          // Convert [ ] checklist lines into nicer lines
-          bodyDiv.innerHTML = escapeHtml(content)
-            .replace(/\[ \]/g, "☐")
-            .replace(/\n/g, "<br>");
-          section.appendChild(bodyDiv);
-
-          body.appendChild(section);
-        });
-      }
-
-      function escapeHtml(s) {
-        return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-      }
-
-      async function handleFinish() {
-        const key = localStorage.getItem("wk_gemini_key");
-        if (!key) { flash("Your key is missing. Please go back to the first step."); return; }
-
-        const transcript = document.getElementById("transcript").value.trim();
-        const chosen = [];
-        document.querySelectorAll("#optionsList input:checked").forEach(cb => chosen.push(cb.value));
-        if (chosen.length === 0) { flash("Please choose at least one thing for your keepsake."); return; }
-
-        const loader = document.getElementById("loader");
-        loader.style.display = "flex"; flash("");
-
-        const prompt = buildPrompt(transcript, chosen);
-        const result = await callGemini(key, prompt);
-        loader.style.display = "none";
-
-        if (result.error) {
-          flash("The wisdom engine replied with an error: " + result.error);
-          return;
-        }
-
-        for (let i = 0; i < 5; i++) document.getElementById("panel" + i).classList.remove("active");
-
-        // Date
-        const now = new Date();
-        document.getElementById("keepsakeDate").textContent =
-          "Captured on " + now.toLocaleDateString();
-
-        renderKeepsake(result.text);
-
-        document.getElementById("results").style.display = "block";
-        setDot(4);
-        flash("");
-      }
-
-      function downloadPDF() {
-        const element = document.getElementById("keepsake");
-        const opt = {
-          margin: 10,
-          filename: "wisdom-keepsake.pdf",
-          image: { type: "jpeg", quality: 0.98 },
-          html2canvas: { scale: 2, backgroundColor: "#fffdf7" },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-        };
-        html2pdf().set(opt).from(element).save();
-      }
-
-      function startOver() {
-        document.getElementById("mediaLink").value = "";
-        document.getElementById("transcript").value = "";
-        document.getElementById("detected").textContent = "";
-        mediaType = ""; helpChoice = ""; platform = "";
-        document.getElementById("typeVideo").classList.remove("selected");
-        document.getElementById("typeAudio").classList.remove("selected");
-        document.getElementById("helpNo").classList.remove("selected");
-        document.getElementById("helpYes").classList.remove("selected");
-        document.getElementById("transcriptArea").style.display = "none";
+      function startOver(){
+        document.getElementById("mediaLink").value="";
+        document.getElementById("transcript").value="";
+        document.getElementById("detected").textContent="";
+        mediaType="";helpChoice="";platform="";
+        ["typeVideo","typeAudio","helpNo","helpYes"].forEach(id=>document.getElementById(id).classList.remove("selected"));
+        document.getElementById("transcriptArea").style.display="none";
         document.getElementById("helpBox").classList.remove("show");
         showPanel(1);
       }
