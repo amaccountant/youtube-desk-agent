@@ -6,196 +6,152 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-    <title>Wisdom Keeper · Turn videos into wisdom you live by</title>
+    <title>The Takeaway · Turn talks into wisdom you live by</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Dancing+Script:wght@500;700&family=Poppins:wght@400;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@600;700&family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
-      :root {
-        --accent: #14808c;      /* strong teal accent */
-        --accent-dark: #0c5b64;
-        --ink: #2b2620;
-        --paper: #fffdf7;
-        --gold: #b08a4a;
-      }
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body {
-        font-family: "Cormorant Garamond", serif;
-        min-height: 100vh; display: flex; justify-content: center; align-items: center;
-        padding: 24px; color: #3b322a;
-        background:
-          radial-gradient(circle at 20% 20%, #fdf6e9, transparent 60%),
-          radial-gradient(circle at 80% 80%, #f6e7cf, transparent 60%),
-          linear-gradient(135deg, #f7efe0, #efe3cd);
-        background-size: 200% 200%; animation: breathe 18s ease-in-out infinite;
-      }
-      @keyframes breathe { 0%{background-position:0 0;} 50%{background-position:100% 100%;} 100%{background-position:0 0;} }
+      * { margin:0; padding:0; box-sizing:border-box; }
+      body { font-family:"Cormorant Garamond",serif; min-height:100vh; display:flex; justify-content:center; align-items:center;
+        padding:24px; color:#3b322a;
+        background:radial-gradient(circle at 20% 20%,#fdf6e9,transparent 60%),radial-gradient(circle at 80% 80%,#f6e7cf,transparent 60%),linear-gradient(135deg,#f7efe0,#efe3cd);
+        background-size:200% 200%; animation:breathe 18s ease-in-out infinite; }
+      @keyframes breathe {0%{background-position:0 0;}50%{background-position:100% 100%;}100%{background-position:0 0;}}
 
-      .card {
-        position: relative; background: rgba(255,253,247,0.94);
-        border: 1px solid rgba(160,130,90,0.35); border-radius: 8px;
-        padding: 46px 40px; max-width: 780px; width: 100%; text-align: center;
-        box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 30px 60px rgba(90,70,40,0.18);
-        animation: fadeIn 1.2s ease;
-      }
-      .card::before { content:""; position:absolute; inset:12px; border:1px solid rgba(160,130,90,0.25); border-radius:4px; pointer-events:none; }
-      @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
+      .card { position:relative; background:rgba(255,253,247,.94); border:1px solid rgba(160,130,90,.35); border-radius:8px;
+        padding:46px 40px; max-width:820px; width:100%; text-align:center;
+        box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 30px 60px rgba(90,70,40,.18); animation:fadeIn 1.2s ease; }
+      .card::before { content:""; position:absolute; inset:12px; border:1px solid rgba(160,130,90,.25); border-radius:4px; pointer-events:none; }
+      @keyframes fadeIn {from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
 
-      .quill { width:74px;height:74px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;border-radius:50%;
-        background:radial-gradient(circle, rgba(212,175,110,0.35), transparent 70%); animation:glow 6s ease-in-out infinite; }
-      @keyframes glow { 0%,100%{transform:scale(1);opacity:.9;} 50%{transform:scale(1.05);opacity:1;} }
-      .quill svg { width:40px; height:40px; }
+      .brand { width:72px;height:72px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;border-radius:50%;
+        background:radial-gradient(circle,rgba(212,175,110,.35),transparent 70%); animation:glow 6s ease-in-out infinite; }
+      @keyframes glow {0%,100%{transform:scale(1);opacity:.9;}50%{transform:scale(1.05);opacity:1;}}
+      .brand svg { width:40px;height:40px; }
 
-      h1 { font-family:"Dancing Script",cursive; font-size:42px; font-weight:700; color:#7a5c2e; line-height:1.1; }
-      .tagline { font-size:18px; font-style:italic; color:#8a7350; margin-bottom:16px; }
+      h1 { font-family:"Poppins",sans-serif; font-size:40px; font-weight:900; letter-spacing:-1px; color:#7a5c2e; line-height:1; }
+      .tagline { font-size:18px; font-style:italic; color:#8a7350; margin:6px 0 16px; }
 
       .progress { display:flex; justify-content:center; gap:8px; margin-bottom:20px; }
-      .dot { width:9px;height:9px;border-radius:50%;background:rgba(160,130,90,0.35);transition:all .3s ease; }
-      .dot.active { background:var(--gold); transform:scale(1.3); }
-
-      .divider { width:80px;height:1px;background:rgba(160,130,90,0.5);margin:0 auto 24px;position:relative; }
-      .divider::after { content:"❦";position:absolute;top:-13px;left:50%;transform:translateX(-50%);color:var(--gold);font-size:18px;background:rgba(255,253,247,0.94);padding:0 8px; }
+      .dot { width:9px;height:9px;border-radius:50%;background:rgba(160,130,90,.35);transition:all .3s ease; }
+      .dot.active { background:#b08a4a; transform:scale(1.3); }
+      .divider { width:80px;height:1px;background:rgba(160,130,90,.5);margin:0 auto 24px;position:relative; }
+      .divider::after { content:"❦";position:absolute;top:-13px;left:50%;transform:translateX(-50%);color:#b08a4a;font-size:18px;background:rgba(255,253,247,.94);padding:0 8px; }
 
       .panel { display:none; animation:fadeIn .5s ease; text-align:left; }
       .panel.active { display:block; }
       .question { font-size:22px; color:#6b5638; margin-bottom:18px; text-align:center; line-height:1.4; }
 
       .choices { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:10px; }
-      .choice { flex:1; min-width:130px; padding:22px 16px; border:1px solid rgba(140,110,70,0.4); border-radius:8px;
-        background:var(--paper); cursor:pointer; transition:all .3s ease; text-align:center; }
-      .choice:hover { border-color:var(--gold); transform:translateY(-2px); box-shadow:0 8px 18px rgba(138,109,52,0.2); }
-      .choice.selected { border-color:var(--gold); background:#f7ecd6; box-shadow:0 0 0 3px rgba(176,138,74,0.18); }
+      .choice { flex:1; min-width:130px; padding:22px 16px; border:1px solid rgba(140,110,70,.4); border-radius:8px; background:#fffdf7; cursor:pointer; transition:all .3s ease; text-align:center; }
+      .choice:hover { border-color:#b08a4a; transform:translateY(-2px); box-shadow:0 8px 18px rgba(138,109,52,.2); }
+      .choice.selected { border-color:#b08a4a; background:#f7ecd6; box-shadow:0 0 0 3px rgba(176,138,74,.18); }
       .choice .icon { font-size:30px; display:block; margin-bottom:8px; }
       .choice .text { font-size:19px; color:#6b5638; }
 
       label.field-label { display:block; font-size:18px; color:#6b5638; margin:6px 0 8px; }
-      input[type=text], input[type=password], textarea {
-        width:100%; padding:14px 16px; border:1px solid rgba(140,110,70,0.45); border-radius:6px;
-        font-size:16px; font-family:"Cormorant Garamond",serif; background:var(--paper); outline:none; color:#3b322a; transition:all .3s ease; }
+      input[type=text], input[type=password], textarea { width:100%; padding:14px 16px; border:1px solid rgba(140,110,70,.45); border-radius:6px; font-size:16px; font-family:"Cormorant Garamond",serif; background:#fffdf7; outline:none; color:#3b322a; transition:all .3s ease; }
       textarea { min-height:150px; resize:vertical; line-height:1.5; }
-      input:focus, textarea:focus { border-color:var(--gold); box-shadow:0 0 0 4px rgba(176,138,74,0.15); }
+      input:focus, textarea:focus { border-color:#b08a4a; box-shadow:0 0 0 4px rgba(176,138,74,.15); }
 
       .detected { font-size:16px; font-style:italic; margin-top:8px; min-height:22px; }
       .detected.ok { color:#5a7a3e; } .detected.warn { color:#b45b3e; }
-      .hint { font-size:15px; font-style:italic; color:#a08c6a; margin-top:8px; }
-      .hint a { color:#8a6d34; }
+      .hint { font-size:15px; font-style:italic; color:#a08c6a; margin-top:8px; } .hint a { color:#8a6d34; }
 
-      .help-box { display:none; margin:14px 0; background:#f7ecd6; border:1px dashed rgba(140,110,70,0.5); border-radius:8px; padding:16px 18px; }
+      .help-box { display:none; margin:14px 0; background:#f7ecd6; border:1px dashed rgba(140,110,70,.5); border-radius:8px; padding:16px 18px; }
       .help-box.show { display:block; }
       .help-box h4 { font-size:18px; color:#7a5c2e; margin-bottom:8px; }
       .help-box ol { padding-left:20px; color:#6b5638; font-size:16px; line-height:1.7; }
       .help-box .kind { color:#b45b3e; font-size:16px; line-height:1.6; }
 
       .options { display:grid; grid-template-columns:1fr 1fr; gap:10px 18px; margin-bottom:8px; }
-      @media (max-width:480px){ .options { grid-template-columns:1fr; } .choices{flex-direction:column;} }
-      .opt { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid rgba(140,110,70,0.3);
-        border-radius:6px; background:var(--paper); transition:border-color .2s ease; }
-      .opt:hover { border-color:var(--gold); }
-      .opt input[type=checkbox] { width:18px; height:18px; accent-color:var(--gold); cursor:pointer; flex:none; }
+      @media (max-width:480px){ .options{grid-template-columns:1fr;} .choices{flex-direction:column;} }
+      .opt { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid rgba(140,110,70,.3); border-radius:6px; background:#fffdf7; transition:border-color .2s ease; }
+      .opt:hover { border-color:#b08a4a; }
+      .opt input[type=checkbox]{ width:18px;height:18px;accent-color:#b08a4a;cursor:pointer;flex:none; }
       .opt label { font-size:17px; color:#4a3c28; cursor:pointer; user-select:none; }
       .recommended { font-size:14px; font-style:italic; color:#8a6d34; margin-left:4px; }
 
       .nav { display:flex; gap:12px; margin-top:24px; }
-      button { flex:1; padding:14px; border:none; border-radius:6px; font-size:18px; font-family:"Cormorant Garamond",serif;
-        letter-spacing:.5px; color:var(--paper); cursor:pointer; background:linear-gradient(135deg,var(--gold),#8a6d34);
-        transition:all .4s ease; box-shadow:0 10px 24px rgba(138,109,52,0.35); }
-      button:hover { transform:translateY(-2px); box-shadow:0 14px 28px rgba(138,109,52,0.45); }
-      button.secondary { background:transparent; color:#8a6d34; border:1px solid rgba(140,110,70,0.5); box-shadow:none; }
-      button.accent { background:linear-gradient(135deg,var(--accent),var(--accent-dark)); box-shadow:0 10px 24px rgba(20,128,140,0.35); }
+      button { flex:1; padding:14px; border:none; border-radius:6px; font-size:18px; font-family:"Poppins",sans-serif; font-weight:600; color:#fffdf7; cursor:pointer; background:linear-gradient(135deg,#b08a4a,#8a6d34); transition:all .4s ease; box-shadow:0 10px 24px rgba(138,109,52,.35); }
+      button:hover { transform:translateY(-2px); box-shadow:0 14px 28px rgba(138,109,52,.45); }
+      button.secondary { background:transparent; color:#8a6d34; border:1px solid rgba(140,110,70,.5); box-shadow:none; }
+      button.accent { background:linear-gradient(135deg,#14808c,#0c5b64); box-shadow:0 10px 24px rgba(20,128,140,.35); }
 
       .message { margin-top:18px; font-size:17px; font-style:italic; color:#b45b3e; min-height:22px; text-align:center; }
       .subtle { color:#8a7350 !important; }
+      .theme-note { text-align:center; font-size:15px; color:#6b5638; margin-bottom:10px; }
 
       .loader { display:none; margin-top:18px; justify-content:center; gap:8px; }
-      .loader span { width:10px;height:10px;border-radius:50%;background:var(--gold);animation:bounce .6s infinite alternate; }
+      .loader span { width:10px;height:10px;border-radius:50%;background:#b08a4a;animation:bounce .6s infinite alternate; }
       .loader span:nth-child(2){animation-delay:.2s;} .loader span:nth-child(3){animation-delay:.4s;}
-      @keyframes bounce { to { transform:translateY(-10px); opacity:.5; } }
+      @keyframes bounce { to{transform:translateY(-10px);opacity:.5;} }
 
       #results { display:none; margin-top:10px; animation:fadeIn .8s ease; }
-      #results h2 { font-family:"Dancing Script",cursive; font-size:30px; color:#7a5c2e; text-align:center; margin-bottom:12px; }
-
-      /* Small preview scaling wrapper */
+      #results h2 { font-family:"Poppins",sans-serif; font-weight:800; font-size:26px; color:#7a5c2e; text-align:center; margin-bottom:12px; }
       .preview-wrap { display:flex; justify-content:center; }
-      .preview-scale { transform:scale(0.62); transform-origin:top center; margin-bottom:-320px; }
+      .preview-scale { transform:scale(0.66); transform-origin:top center; margin-bottom:-382px; }
 
-      /* ============ THE A4 ONE-PAGER (visual) ============ */
+      /* ============ A4 ONE-PAGER (fills the page, theme-driven) ============ */
       .onepager {
-        width: 794px;            /* A4 width at 96dpi */
-        min-height: 1123px;      /* A4 height */
-        background: var(--paper);
-        font-family: "Poppins", sans-serif;
-        color: var(--ink);
-        padding: 0; position: relative; overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        width:794px; height:1123px; background:var(--paper,#fffdf7);
+        font-family:"Poppins",sans-serif; color:var(--ink,#2b2620);
+        position:relative; overflow:hidden; display:flex; flex-direction:column;
+        box-shadow:0 10px 40px rgba(0,0,0,.15);
       }
-      .op-top {
-        background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-        color: #fff; padding: 40px 46px 34px;
-      }
-      .op-kicker { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; opacity: .9; }
-      .op-headline { font-size: 46px; font-weight: 800; line-height: 1.05; margin-top: 8px; }
-      .op-sub { font-size: 17px; font-weight: 400; margin-top: 12px; max-width: 78%; opacity: .95; }
+      .op-top { background:var(--grad); color:#fff; padding:46px 54px 40px; position:relative; }
+      .op-date { position:absolute; top:20px; right:26px; font-size:12px; opacity:.85; }
+      .op-kicker { font-size:13px; letter-spacing:5px; text-transform:uppercase; opacity:.9; }
+      .op-headline { font-weight:900; line-height:1.02; margin-top:10px; letter-spacing:-1px; }
+      .op-sub { font-weight:400; margin-top:14px; max-width:82%; opacity:.96; }
 
-      .op-quote {
-        margin: 0 46px; margin-top: -22px; background:#fff; border-left: 6px solid var(--gold);
-        padding: 18px 22px; font-family:"Cormorant Garamond",serif; font-style: italic;
-        font-size: 21px; color: var(--ink); box-shadow: 0 8px 24px rgba(0,0,0,0.08); border-radius: 4px;
-      }
+      .op-quote { margin:-26px 54px 0; background:#fff; border-left:7px solid var(--accent2);
+        padding:20px 24px; font-family:"Cormorant Garamond",serif; font-style:italic; color:var(--ink);
+        box-shadow:0 10px 28px rgba(0,0,0,.1); border-radius:4px; }
 
-      .op-section-title {
-        font-size: 15px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent-dark);
-        font-weight: 700; margin: 30px 46px 14px; border-bottom: 2px solid #e7dcc2; padding-bottom: 8px;
-      }
+      /* middle region stretches to fill */
+      .op-mid { flex:1; display:flex; flex-direction:column; justify-content:space-evenly; padding:8px 54px; }
 
-      .op-points { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 0 46px; }
-      .op-point {
-        background: #fbf6 ea; background:#fbf6ea; border: 1px solid #ecdfbf; border-radius: 10px;
-        padding: 16px 16px 16px 14px; display: flex; gap: 12px; align-items: flex-start;
-      }
-      .op-badge {
-        width: 44px; height: 44px; flex: none; border-radius: 12px;
-        background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-        display: flex; align-items: center; justify-content: center; font-size: 24px;
-      }
-      .op-point .pt-title { font-weight: 700; font-size: 16px; color: var(--accent-dark); }
-      .op-point .pt-text { font-size: 14px; line-height: 1.5; margin-top: 3px; color: #4a4238; }
+      .op-sec-title { font-size:15px; letter-spacing:4px; text-transform:uppercase; color:var(--accent2);
+        font-weight:800; border-bottom:3px solid var(--line); padding-bottom:8px; margin-bottom:4px; }
 
-      .op-flow { display: flex; align-items: stretch; gap: 0; margin: 0 46px; }
-      .op-step { flex: 1; text-align: center; position: relative; padding: 6px 8px; }
-      .op-step .num {
-        width: 46px; height: 46px; margin: 0 auto 8px; border-radius: 50%;
-        background: var(--gold); color: #fff; font-weight: 800; font-size: 20px;
-        display: flex; align-items: center; justify-content: center;
-      }
-      .op-step .st-label { font-weight: 700; font-size: 14px; color: var(--accent-dark); text-transform: uppercase; letter-spacing: 1px; }
-      .op-step .st-text { font-size: 13px; line-height: 1.45; margin-top: 4px; color: #4a4238; }
-      .op-arrow { display:flex; align-items:center; color: var(--gold); font-size: 26px; padding: 0 2px; }
+      .op-points { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+      .op-point { background:var(--chip); border:1px solid var(--chipBorder); border-radius:14px; padding:18px; display:flex; gap:14px; align-items:flex-start; }
+      .op-badge { width:52px;height:52px;flex:none;border-radius:14px; background:var(--grad); display:flex;align-items:center;justify-content:center; }
+      .op-badge .emoji { font-size:26px; } .op-badge svg { width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2; }
+      .op-point .pt-title { font-weight:700; color:var(--accent2); }
+      .op-point .pt-text { line-height:1.5; margin-top:4px; color:#4a4238; }
 
-      .op-footer {
-        position: absolute; bottom: 0; left: 0; right: 0;
-        background: var(--accent-dark); color: #fff; text-align: center;
-        font-size: 13px; padding: 12px; letter-spacing: 1px;
-      }
-      .op-date { position:absolute; top: 18px; right: 24px; font-size: 12px; opacity:.85; }
+      .op-flow { display:flex; align-items:flex-start; }
+      .op-step { flex:1; text-align:center; padding:4px 10px; }
+      .op-step .num { width:52px;height:52px;margin:0 auto 10px;border-radius:50%; background:var(--accent2); color:#fff; font-weight:900; display:flex;align-items:center;justify-content:center; }
+      .op-step .st-label { font-weight:800; color:var(--accent2); text-transform:uppercase; letter-spacing:1px; }
+      .op-step .st-text { line-height:1.45; margin-top:5px; color:#4a4238; }
+      .op-arrow { display:flex; align-items:center; color:var(--accent2); padding-top:16px; font-size:28px; }
+
+      .op-footer { background:var(--grad); color:#fff; text-align:center; padding:14px; letter-spacing:1px; }
+
+      /* Boldness variants (set via class on .onepager) */
+      .mood-bold .op-headline { font-size:56px; } .mood-bold .op-sub { font-size:19px; } .mood-bold .op-quote{font-size:23px;}
+      .mood-bold .op-point .pt-title{font-size:18px;} .mood-bold .op-point .pt-text{font-size:15px;}
+      .mood-bold .op-step .st-text{font-size:14px;} .mood-bold .op-footer{font-size:15px; font-weight:600;}
+      .mood-clean .op-headline { font-size:44px; } .mood-clean .op-sub { font-size:17px; } .mood-clean .op-quote{font-size:20px;}
+      .mood-clean .op-point .pt-title{font-size:16px;} .mood-clean .op-point .pt-text{font-size:14px;}
+      .mood-clean .op-step .st-text{font-size:13px;} .mood-clean .op-footer{font-size:13px;}
     </style>
   </head>
 
   <body>
     <div class="card">
-      <div class="quill">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#7a5c2e" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 4C10 6 6 12 4 20l3-1c1-4 4-7 8-9" />
-          <path d="M20 4c-3 4-6 6-10 8l3 3c4-2 6-5 7-8" />
-          <path d="M4 20l4-4" />
+      <div class="brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#7a5c2e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4z"/><path d="M15 4v5h5"/><path d="M8 13h8M8 17h5"/>
         </svg>
       </div>
-      <h1>Wisdom Keeper</h1>
-      <p class="tagline">Turn the words that move you into wisdom you live by.</p>
+      <h1>The Takeaway</h1>
+      <p class="tagline">Turn the talks that move you into wisdom you live by.</p>
 
       <div class="progress">
         <div class="dot active" id="dot0"></div><div class="dot" id="dot1"></div>
@@ -203,17 +159,15 @@
       </div>
       <div class="divider"></div>
 
-      <!-- PANEL 0: API key -->
       <div class="panel active" id="panel0">
         <p class="question">First, connect your free wisdom engine</p>
         <label class="field-label">Your Google Gemini API key</label>
         <input type="password" id="apiKey" placeholder="Paste your Gemini API key here" />
-        <p class="hint">Your key stays only in your own browser. Don’t have one? Get a free key at
+        <p class="hint">Your key stays only in your own browser. Get a free key at
           <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a>.</p>
         <div class="nav"><button onclick="saveKey()">Continue →</button></div>
       </div>
 
-      <!-- PANEL 1: Audio or Video -->
       <div class="panel" id="panel1">
         <p class="question">What kind of wisdom did you find?</p>
         <div class="choices">
@@ -224,7 +178,6 @@
         <div class="nav"><button class="secondary" onclick="showPanel(0)">← Back</button></div>
       </div>
 
-      <!-- PANEL 2: Link -->
       <div class="panel" id="panel2">
         <p class="question" id="linkQuestion">Paste the link that inspired you</p>
         <label class="field-label">Link</label>
@@ -233,18 +186,13 @@
         <div class="nav"><button class="secondary" onclick="showPanel(1)">← Back</button><button onclick="goTo(3)">Continue →</button></div>
       </div>
 
-      <!-- PANEL 3: Transcript -->
       <div class="panel" id="panel3">
         <p class="question">Do you already have the transcript?</p>
         <div class="choices">
           <div class="choice" id="helpNo" onclick="selectHelp('no')"><span class="icon">✔</span><span class="text">Yes, I have it</span></div>
           <div class="choice" id="helpYes" onclick="selectHelp('yes')"><span class="icon">🧭</span><span class="text">No, guide me</span></div>
         </div>
-        <div class="help-box" id="helpBox">
-          <h4 id="helpTitle">How to copy the transcript</h4>
-          <ol id="helpSteps"></ol>
-          <p class="kind" id="helpKind" style="display:none;"></p>
-        </div>
+        <div class="help-box" id="helpBox"><h4 id="helpTitle">How to copy the transcript</h4><ol id="helpSteps"></ol><p class="kind" id="helpKind" style="display:none;"></p></div>
         <div id="transcriptArea" style="display:none; margin-top:16px;">
           <label class="field-label">Paste the transcript here</label>
           <textarea id="transcript" placeholder="Paste the transcript here..."></textarea>
@@ -252,7 +200,6 @@
         <div class="nav"><button class="secondary" onclick="showPanel(2)">← Back</button><button onclick="goTo(4)">Continue →</button></div>
       </div>
 
-      <!-- PANEL 4: Choose outputs -->
       <div class="panel" id="panel4">
         <p class="question">What would you like in your keepsake?</p>
         <div class="options" id="optionsList">
@@ -266,246 +213,238 @@
           <div class="opt"><input type="checkbox" id="c8" value="Limitations"><label for="c8">Limitations</label></div>
           <div class="opt"><input type="checkbox" id="c9" value="One page summary" checked><label for="c9">One-page summary<span class="recommended">(recommended)</span></label></div>
         </div>
-        <div class="nav"><button class="secondary" onclick="showPanel(3)">← Back</button><button class="accent" onclick="handleFinish()">Create My Keepsake ✒</button></div>
+        <div class="nav"><button class="secondary" onclick="showPanel(3)">← Back</button><button class="accent" onclick="handleFinish()">Create My Takeaway ✒</button></div>
       </div>
 
       <div class="loader" id="loader"><span></span><span></span><span></span></div>
       <p class="message" id="message"></p>
 
-      <!-- Results -->
       <div id="results">
-        <h2>Your Wisdom One-Pager</h2>
-        <div class="preview-wrap"><div class="preview-scale">
-          <!-- A4 one-pager rendered here -->
-          <div class="onepager" id="onepager"></div>
-        </div></div>
-
-        <div class="nav">
-          <button class="accent" onclick="downloadOnePager()">⬇ Download One-Pager PDF</button>
-        </div>
-        <div class="nav">
-          <button class="secondary" onclick="startOver()">↺ Capture another</button>
-        </div>
+        <h2>Your One-Pager</h2>
+        <p class="theme-note" id="themeNote"></p>
+        <div class="preview-wrap"><div class="preview-scale"><div class="onepager" id="onepager"></div></div></div>
+        <div class="nav"><button class="accent" onclick="downloadOnePager()">⬇ Download One-Pager PDF</button></div>
+        <div class="nav"><button class="secondary" onclick="startOver()">↺ Capture another</button></div>
       </div>
 
-      <p class="hint" style="text-align:center; margin-top:20px;">Wisdom Keeper · Notes for a more intentional life</p>
+      <p class="hint" style="text-align:center; margin-top:20px;">The Takeaway · Notes for a more intentional life</p>
     </div>
 
     <script>
       let mediaType="", helpChoice="", platform="", workingModel="";
 
-      const ICONS = {
-        brain:"🧠", clock:"⏳", target:"🎯", heart:"❤️", spark:"✨", growth:"🌱",
-        focus:"🔍", book:"📖", star:"⭐", fire:"🔥", key:"🔑", compass:"🧭",
-        lightbulb:"💡", muscle:"💪", mountain:"⛰️", seed:"🌰", sun:"☀️", check:"✅",
-        warning:"⚠️", speak:"🗣️", listen:"👂", write:"✍️", calm:"🧘", link:"🔗"
+      // THEME DEFINITIONS
+      const THEMES = {
+        motivational: { label:"Motivational", mood:"bold", icons:"emoji",
+          paper:"#fff8f0", ink:"#2a2320", accent2:"#1b2a4a",
+          grad:"linear-gradient(135deg,#ff7a18,#ff3d6e)", line:"#ffd8b0", chip:"#fff3e6", chipBorder:"#ffd2a8" },
+        business: { label:"Business & Leadership", mood:"clean", icons:"svg",
+          paper:"#fbfdfd", ink:"#232a2b", accent2:"#0c5b64",
+          grad:"linear-gradient(135deg,#14808c,#0c5b64)", line:"#cfe3e5", chip:"#f1f8f8", chipBorder:"#d2e6e7" },
+        mindfulness: { label:"Mindfulness & Wellbeing", mood:"clean", icons:"svg",
+          paper:"#f8faf5", ink:"#2c312a", accent2:"#4a7a4e",
+          grad:"linear-gradient(135deg,#7bbf7f,#4a7a4e)", line:"#d7e8d4", chip:"#eef6ec", chipBorder:"#d2e6cf" },
+        learning: { label:"Learning & Productivity", mood:"clean", icons:"svg",
+          paper:"#f8f8fd", ink:"#262636", accent2:"#3a3f9e",
+          grad:"linear-gradient(135deg,#5b60d6,#3a3f9e)", line:"#dcdcf2", chip:"#eeeefb", chipBorder:"#d4d4f0" },
+        emotional: { label:"Relationships & Emotion", mood:"bold", icons:"emoji",
+          paper:"#fff7f6", ink:"#2e2422", accent2:"#8a4b3a",
+          grad:"linear-gradient(135deg,#f26d7d,#c0566a)", line:"#f3d6d1", chip:"#fdeeec", chipBorder:"#f3d2cc" }
       };
-      function iconFor(k){ if(!k) return "✨"; k=k.toLowerCase().trim(); return ICONS[k]||"✨"; }
+
+      const EMOJI = { brain:"🧠",clock:"⏳",target:"🎯",heart:"❤️",spark:"✨",growth:"🌱",focus:"🔍",book:"📖",star:"⭐",fire:"🔥",key:"🔑",compass:"🧭",lightbulb:"💡",muscle:"💪",mountain:"⛰️",sun:"☀️",check:"✅",speak:"🗣️",listen:"👂",write:"✍️",calm:"🧘",link:"🔗" };
+      // simple line icons for professional themes
+      const SVG = {
+        target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>',
+        clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+        brain:'<path d="M9 3a3 3 0 0 0-3 3 3 3 0 0 0-1 5 3 3 0 0 0 2 5 3 3 0 0 0 5 1 3 3 0 0 0 5-1 3 3 0 0 0 2-5 3 3 0 0 0-1-5 3 3 0 0 0-3-3 3 3 0 0 0-3 1 3 3 0 0 0-3-1z"/>',
+        key:'<circle cx="8" cy="12" r="4"/><path d="M12 12h9l-2 2m2-2-2-2"/>',
+        growth:'<path d="M12 20v-8"/><path d="M12 12c0-4 3-6 7-6-1 4-3 6-7 6z"/><path d="M12 14c0-3-2-5-5-5 1 3 2 5 5 5z"/>',
+        lightbulb:'<path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10c1 1 1 2 1 3h6c0-1 0-2 1-3a6 6 0 0 0-4-10z"/>',
+        compass:'<circle cx="12" cy="12" r="9"/><path d="M16 8l-2 6-6 2 2-6z"/>',
+        focus:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/>',
+        book:'<path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M4 19a2 2 0 0 0 2 2h12"/>',
+        star:'<path d="M12 3l2.5 6 6.5.5-5 4 1.5 6.5L12 17l-5.5 3 1.5-6.5-5-4 6.5-.5z"/>',
+        speak:'<path d="M4 5h16v10H8l-4 4z"/>',
+        link:'<path d="M9 15l6-6"/><path d="M8 11l-2 2a3 3 0 0 0 4 4l2-2"/><path d="M16 13l2-2a3 3 0 0 0-4-4l-2 2"/>',
+        check:'<path d="M4 12l5 5L20 6"/>',
+        calm:'<circle cx="12" cy="8" r="3"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/>'
+      };
+
+      function iconHTML(theme, key){
+        key=(key||"spark").toLowerCase().trim();
+        if(theme.icons==="svg" && SVG[key]) return '<svg viewBox="0 0 24 24">'+SVG[key]+'</svg>';
+        return '<span class="emoji">'+(EMOJI[key]||"✨")+'</span>';
+      }
 
       const platforms = {
         youtube:{name:"YouTube",hasTranscript:true,steps:["Open the video on YouTube.","Click “…more” below the video, then “Show transcript”.","A transcript panel opens on the right.","Select all the text, copy it, and paste it below."]},
-        spotify:{name:"Spotify",hasTranscript:false,kind:"Spotify usually doesn’t allow copying transcripts. Try the same episode on YouTube or the show’s website for a copyable transcript."},
+        spotify:{name:"Spotify",hasTranscript:false,kind:"Spotify usually doesn’t allow copying transcripts. Try the same episode on YouTube or the show’s website."},
         apple:{name:"Apple Podcasts",hasTranscript:false,kind:"Apple Podcasts doesn’t allow easy copying. Try the same episode on YouTube or the creator’s website, then paste it below."},
-        vimeo:{name:"Vimeo",hasTranscript:true,steps:["Open the video on Vimeo.","Click the CC/Subtitles icon to confirm captions exist.","If a transcript is enabled, it appears near the video.","Select the text, copy it, and paste it below."]},
-        ted:{name:"TED",hasTranscript:true,steps:["Open the talk on TED.com.","Click the “Transcript” tab below the video.","Choose your language if prompted.","Select the text, copy it, and paste it below."]}
+        vimeo:{name:"Vimeo",hasTranscript:true,steps:["Open the video on Vimeo.","Click the CC/Subtitles icon to confirm captions.","If a transcript is enabled, it appears near the video.","Select, copy, and paste it below."]},
+        ted:{name:"TED",hasTranscript:true,steps:["Open the talk on TED.com.","Click the “Transcript” tab.","Choose your language if prompted.","Select, copy, and paste it below."]}
       };
 
-      window.onload=function(){ const s=localStorage.getItem("wk_gemini_key"); if(s) document.getElementById("apiKey").value=s; };
-
-      function detectFromLink(link){ const l=link.toLowerCase();
+      window.onload=function(){const s=localStorage.getItem("wk_gemini_key"); if(s)document.getElementById("apiKey").value=s;};
+      function detectFromLink(link){const l=link.toLowerCase();
         if(l.includes("youtube.com")||l.includes("youtu.be"))return"youtube";
-        if(l.includes("spotify.com"))return"spotify";
-        if(l.includes("podcasts.apple.com"))return"apple";
-        if(l.includes("vimeo.com"))return"vimeo";
-        if(l.includes("ted.com"))return"ted"; return""; }
-
-      function setDot(step){ for(let i=0;i<5;i++) document.getElementById("dot"+i).classList.toggle("active", i<=step); }
-      function showPanel(step){ document.getElementById("results").style.display="none";
-        for(let i=0;i<5;i++) document.getElementById("panel"+i).classList.remove("active");
-        document.getElementById("panel"+step).classList.add("active"); setDot(step);
-        document.getElementById("message").textContent=""; }
-
-      function saveKey(){ const k=document.getElementById("apiKey").value.trim();
+        if(l.includes("spotify.com"))return"spotify"; if(l.includes("podcasts.apple.com"))return"apple";
+        if(l.includes("vimeo.com"))return"vimeo"; if(l.includes("ted.com"))return"ted"; return"";}
+      function setDot(s){for(let i=0;i<5;i++)document.getElementById("dot"+i).classList.toggle("active",i<=s);}
+      function showPanel(s){document.getElementById("results").style.display="none";
+        for(let i=0;i<5;i++)document.getElementById("panel"+i).classList.remove("active");
+        document.getElementById("panel"+s).classList.add("active");setDot(s);document.getElementById("message").textContent="";}
+      function saveKey(){const k=document.getElementById("apiKey").value.trim();
         if(k===""){flash("Please paste your Gemini API key to continue.");return;}
-        localStorage.setItem("wk_gemini_key",k); showPanel(1); }
-
-      function selectType(type){ mediaType=type;
-        document.getElementById("typeVideo").classList.toggle("selected",type==="video");
-        document.getElementById("typeAudio").classList.toggle("selected",type==="audio");
-        document.getElementById("linkQuestion").textContent = type==="audio"?"Paste the audio link that inspired you":"Paste the video link that inspired you";
-        setTimeout(()=>showPanel(2),300); }
-
-      function detectPlatform(){ const link=document.getElementById("mediaLink").value.trim();
-        const d=document.getElementById("detected"); platform=detectFromLink(link);
+        localStorage.setItem("wk_gemini_key",k);showPanel(1);}
+      function selectType(t){mediaType=t;
+        document.getElementById("typeVideo").classList.toggle("selected",t==="video");
+        document.getElementById("typeAudio").classList.toggle("selected",t==="audio");
+        document.getElementById("linkQuestion").textContent=t==="audio"?"Paste the audio link that inspired you":"Paste the video link that inspired you";
+        setTimeout(()=>showPanel(2),300);}
+      function detectPlatform(){const link=document.getElementById("mediaLink").value.trim();const d=document.getElementById("detected");platform=detectFromLink(link);
         if(link===""){d.textContent="";d.className="detected";return;}
         if(platform&&platforms[platform]){d.textContent="Detected: "+platforms[platform].name+" ✓";d.className="detected ok";}
         else{d.textContent="I don’t recognise this platform — but you can still paste a transcript manually.";d.className="detected warn";}
-        if(helpChoice==="yes") buildHelp(); }
-
-      function selectHelp(choice){ helpChoice=choice;
-        document.getElementById("helpNo").classList.toggle("selected",choice==="no");
-        document.getElementById("helpYes").classList.toggle("selected",choice==="yes");
+        if(helpChoice==="yes")buildHelp();}
+      function selectHelp(c){helpChoice=c;
+        document.getElementById("helpNo").classList.toggle("selected",c==="no");
+        document.getElementById("helpYes").classList.toggle("selected",c==="yes");
         document.getElementById("transcriptArea").style.display="block";
-        if(choice==="yes") buildHelp(); else document.getElementById("helpBox").classList.remove("show"); }
+        if(c==="yes")buildHelp();else document.getElementById("helpBox").classList.remove("show");}
+      function buildHelp(){const hb=document.getElementById("helpBox"),st=document.getElementById("helpSteps"),k=document.getElementById("helpKind"),t=document.getElementById("helpTitle");
+        hb.classList.add("show");st.innerHTML="";k.style.display="none";k.textContent="";
+        if(platform&&platforms[platform]){const p=platforms[platform];t.textContent="How to copy the transcript from "+p.name;
+          if(p.hasTranscript)st.innerHTML=p.steps.map(s=>"<li>"+s+"</li>").join("");else{k.style.display="block";k.textContent=p.kind;}}
+        else{t.textContent="A gentle note";k.style.display="block";k.textContent="I don’t recognise this platform. Try the same talk on YouTube or the creator’s website, copy the transcript, and paste it below.";}}
+      function goTo(s){
+        if(s===3){const l=document.getElementById("mediaLink").value.trim();if(l===""){flash("Please paste the link before continuing.");return;}}
+        if(s===4){if(helpChoice===""){flash("Please tell me if you have the transcript or need help.");return;}
+          const t=document.getElementById("transcript").value.trim();if(t===""){flash("Please paste the transcript before continuing.");return;}}
+        showPanel(s);}
+      function flash(t,sub){const m=document.getElementById("message");m.textContent=t;m.classList.toggle("subtle",!!sub);}
 
-      function buildHelp(){ const hb=document.getElementById("helpBox"),steps=document.getElementById("helpSteps"),
-        kind=document.getElementById("helpKind"),title=document.getElementById("helpTitle");
-        hb.classList.add("show"); steps.innerHTML=""; kind.style.display="none"; kind.textContent="";
-        if(platform&&platforms[platform]){const p=platforms[platform]; title.textContent="How to copy the transcript from "+p.name;
-          if(p.hasTranscript) steps.innerHTML=p.steps.map(s=>"<li>"+s+"</li>").join(""); else {kind.style.display="block";kind.textContent=p.kind;}}
-        else{title.textContent="A gentle note";kind.style.display="block";
-          kind.textContent="I don’t yet recognise this platform. Try finding the same talk on YouTube or the creator’s website, copy the transcript there, and paste it below.";}}
-
-      function goTo(step){
-        if(step===3){const l=document.getElementById("mediaLink").value.trim(); if(l===""){flash("Please paste the link before continuing.");return;}}
-        if(step===4){if(helpChoice===""){flash("Please tell me if you have the transcript or need help.");return;}
-          const t=document.getElementById("transcript").value.trim(); if(t===""){flash("Please paste the transcript before continuing.");return;}}
-        showPanel(step);
-      }
-
-      function flash(text,subtle){const m=document.getElementById("message");m.textContent=text;m.classList.toggle("subtle",!!subtle);}
-
-      // Ask for a VISUAL one-pager as JSON
       function buildPrompt(transcript){
-        const iconList = Object.keys(ICONS).join(", ");
-        return `You are Wisdom Keeper, a designer of beautiful one-page visual summaries.
+        const themeKeys=Object.keys(THEMES).join(", ");
+        const emojiKeys=Object.keys(EMOJI).join(", ");
+        return `You are "The Takeaway", a designer of inspiring one-page visual summaries.
 
-Read the transcript and distill its core wisdom into a JSON object for an infographic.
+Read the transcript, understand its PURPOSE and MOOD, then distill it into JSON for an infographic poster.
 Use ONLY ideas supported by the transcript. Do NOT invent facts.
 
-Return ONLY valid JSON (no markdown, no extra text) in EXACTLY this shape:
-{
-  "headline": "2-4 punchy words capturing the big idea",
-  "subhead": "one sentence (max 18 words) expanding the idea",
-  "quote": "a short memorable line (max 16 words) in the speaker's spirit",
-  "points": [
-    { "icon": "one word from the list", "title": "3-5 words", "text": "max 16 words" }
-  ],
-  "steps": [
-    { "label": "1-2 words", "text": "max 12 words" }
-  ]
-}
+First choose the best "theme" for the content from: ${themeKeys}.
+- motivational: self-growth, inspiration, success mindset
+- business: leadership, communication, work skills
+- mindfulness: calm, wellbeing, spirituality
+- learning: study, productivity, skills
+- emotional: relationships, feelings, connection
 
+Return ONLY valid JSON (no markdown) in EXACTLY this shape:
+{
+  "theme": "one of: ${themeKeys}",
+  "headline": "2-4 punchy words capturing the big idea",
+  "subhead": "one sentence (max 16 words)",
+  "quote": "a short memorable line (max 14 words)",
+  "points": [ { "icon":"one word", "title":"3-5 words", "text":"max 14 words" } ],
+  "steps": [ { "label":"1-2 words", "text":"max 11 words" } ]
+}
 Rules:
-- Provide EXACTLY 4 points and EXACTLY 3 steps.
-- "icon" MUST be one of: ${iconList}. Pick the most fitting.
-- Keep every text field short and vivid — this is a visual poster, not an essay.
-- No line breaks inside any value.
+- EXACTLY 4 points and EXACTLY 3 steps.
+- "icon" MUST be one of: ${emojiKeys}. Pick the most fitting for each point.
+- Keep text short and vivid. No line breaks inside values.
+- If motivational/emotional, make language energizing and empowering.
 
 TRANSCRIPT:
 ${transcript}`;
       }
 
-      async function getModelCandidates(key){ try{
+      async function getModelCandidates(key){try{
         const res=await fetch("https://generativelanguage.googleapis.com/v1beta/models?key="+key);
-        const data=await res.json(); if(data.error) return {error:data.error.message};
-        let usable=(data.models||[]).filter(m=>m.supportedGenerationMethods&&m.supportedGenerationMethods.includes("generateContent"))
+        const data=await res.json(); if(data.error)return{error:data.error.message};
+        let u=(data.models||[]).filter(m=>m.supportedGenerationMethods&&m.supportedGenerationMethods.includes("generateContent"))
           .map(m=>m.name.replace(/^models\//,"")).filter(n=>!/vision|image|embedding|aqa/i.test(n));
-        usable.sort((a,b)=>{const fa=/flash/i.test(a)?0:1,fb=/flash/i.test(b)?0:1; if(fa!==fb)return fa-fb; return b.localeCompare(a);});
-        return {list:usable};
-      }catch(e){return {error:e.message};}}
-
-      async function tryModel(key,model,prompt){
-        const url="https://generativelanguage.googleapis.com/v1beta/models/"+model+":generateContent?key="+key;
-        const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})}); return await r.json();
-      }
-      function extractSuggested(msg){ if(!msg)return""; const m=msg.match(/models\/([a-zA-Z0-9.\-]+)/g); if(!m)return"";
-        return m[m.length-1].replace(/^models\//,""); }
-
+        u.sort((a,b)=>{const fa=/flash/i.test(a)?0:1,fb=/flash/i.test(b)?0:1;if(fa!==fb)return fa-fb;return b.localeCompare(a);});
+        return{list:u};}catch(e){return{error:e.message};}}
+      async function tryModel(key,model,prompt){const url="https://generativelanguage.googleapis.com/v1beta/models/"+model+":generateContent?key="+key;
+        const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});return await r.json();}
+      function extractSuggested(m){if(!m)return"";const x=m.match(/models\/([a-zA-Z0-9.\-]+)/g);if(!x)return"";return x[x.length-1].replace(/^models\//,"");}
       async function callGemini(key,prompt){
-        if(workingModel){const d=await tryModel(key,workingModel,prompt);
-          if(!d.error){const t=d.candidates?.[0]?.content?.parts?.[0]?.text; if(t)return{text:t};} workingModel="";}
-        const disc=await getModelCandidates(key); if(disc.error)return{error:disc.error};
-        let cand=disc.list.slice(); const tried=new Set(); let last="No available model responded.";
-        for(let i=0;i<cand.length+3;i++){ const model=cand.shift(); if(!model||tried.has(model))continue; tried.add(model);
-          flash("Designing your one-pager…",true); const d=await tryModel(key,model,prompt);
-          if(!d.error){const t=d.candidates?.[0]?.content?.parts?.[0]?.text; if(t){workingModel=model;return{text:t};} last="Empty response from "+model; continue;}
-          last=d.error.message; const s=extractSuggested(d.error.message); if(s&&!tried.has(s))cand.unshift(s);
-        } return {error:last};
-      }
-
-      function parseJSON(text){
-        // strip code fences if any
-        let t=text.trim().replace(/^```json/i,"").replace(/^```/,"").replace(/```$/,"").trim();
-        // grab the outermost { ... }
-        const first=t.indexOf("{"), last=t.lastIndexOf("}");
-        if(first!==-1&&last!==-1) t=t.slice(first,last+1);
-        return JSON.parse(t);
-      }
-
-      function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+        if(workingModel){const d=await tryModel(key,workingModel,prompt);if(!d.error){const t=d.candidates?.[0]?.content?.parts?.[0]?.text;if(t)return{text:t};}workingModel="";}
+        const disc=await getModelCandidates(key);if(disc.error)return{error:disc.error};
+        let c=disc.list.slice();const tried=new Set();let last="No available model responded.";
+        for(let i=0;i<c.length+3;i++){const model=c.shift();if(!model||tried.has(model))continue;tried.add(model);
+          flash("Designing your Takeaway…",true);const d=await tryModel(key,model,prompt);
+          if(!d.error){const t=d.candidates?.[0]?.content?.parts?.[0]?.text;if(t){workingModel=model;return{text:t};}last="Empty response from "+model;continue;}
+          last=d.error.message;const s=extractSuggested(d.error.message);if(s&&!tried.has(s))c.unshift(s);}
+        return{error:last};}
+      function parseJSON(text){let t=text.trim().replace(/^```json/i,"").replace(/^```/,"").replace(/```$/,"").trim();
+        const f=t.indexOf("{"),l=t.lastIndexOf("}");if(f!==-1&&l!==-1)t=t.slice(f,l+1);return JSON.parse(t);}
+      function esc(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 
       function renderOnePager(data){
+        const theme=THEMES[data.theme]||THEMES.business;
+        const op=document.getElementById("onepager");
+        // apply theme variables + mood class
+        op.className="onepager mood-"+theme.mood;
+        op.style.setProperty("--paper",theme.paper);
+        op.style.setProperty("--ink",theme.ink);
+        op.style.setProperty("--accent2",theme.accent2);
+        op.style.setProperty("--grad",theme.grad);
+        op.style.setProperty("--line",theme.line);
+        op.style.setProperty("--chip",theme.chip);
+        op.style.setProperty("--chipBorder",theme.chipBorder);
+
+        document.getElementById("themeNote").textContent="Theme chosen by AI: "+theme.label;
+
         const now=new Date();
         const points=(data.points||[]).slice(0,4);
         const steps=(data.steps||[]).slice(0,3);
+        const ptHTML=points.map(p=>`<div class="op-point"><div class="op-badge">${iconHTML(theme,p.icon)}</div><div><div class="pt-title">${esc(p.title)}</div><div class="pt-text">${esc(p.text)}</div></div></div>`).join("");
+        let stHTML="";steps.forEach((s,i)=>{stHTML+=`<div class="op-step"><div class="num">${i+1}</div><div class="st-label">${esc(s.label)}</div><div class="st-text">${esc(s.text)}</div></div>`;if(i<steps.length-1)stHTML+=`<div class="op-arrow">➜</div>`;});
 
-        let pointsHTML=points.map(p=>`
-          <div class="op-point">
-            <div class="op-badge">${iconFor(p.icon)}</div>
-            <div><div class="pt-title">${esc(p.title)}</div><div class="pt-text">${esc(p.text)}</div></div>
-          </div>`).join("");
-
-        let stepsHTML="";
-        steps.forEach((s,i)=>{
-          stepsHTML+=`<div class="op-step"><div class="num">${i+1}</div>
-            <div class="st-label">${esc(s.label)}</div><div class="st-text">${esc(s.text)}</div></div>`;
-          if(i<steps.length-1) stepsHTML+=`<div class="op-arrow">➜</div>`;
-        });
-
-        document.getElementById("onepager").innerHTML=`
+        op.innerHTML=`
           <div class="op-top">
             <div class="op-date">${now.toLocaleDateString()}</div>
-            <div class="op-kicker">Wisdom Keeper · One-Pager</div>
+            <div class="op-kicker">The Takeaway</div>
             <div class="op-headline">${esc(data.headline)}</div>
             <div class="op-sub">${esc(data.subhead)}</div>
           </div>
           <div class="op-quote">“${esc(data.quote)}”</div>
-          <div class="op-section-title">Key Insights</div>
-          <div class="op-points">${pointsHTML}</div>
-          <div class="op-section-title">Put It Into Practice</div>
-          <div class="op-flow">${stepsHTML}</div>
-          <div class="op-footer">Captured with Wisdom Keeper · Review daily, live intentionally</div>
-        `;
+          <div class="op-mid">
+            <div><div class="op-sec-title">Key Insights</div><div class="op-points">${ptHTML}</div></div>
+            <div><div class="op-sec-title">Put It Into Practice</div><div class="op-flow">${stHTML}</div></div>
+          </div>
+          <div class="op-footer">The Takeaway · Review daily, live intentionally</div>`;
       }
 
       async function handleFinish(){
         const key=localStorage.getItem("wk_gemini_key");
         if(!key){flash("Your key is missing. Please go back to the first step.");return;}
         const transcript=document.getElementById("transcript").value.trim();
-        const loader=document.getElementById("loader"); loader.style.display="flex"; flash("");
-
-        const result=await callGemini(key, buildPrompt(transcript));
+        const loader=document.getElementById("loader");loader.style.display="flex";flash("");
+        const result=await callGemini(key,buildPrompt(transcript));
         loader.style.display="none";
         if(result.error){flash("The wisdom engine replied with an error: "+result.error);return;}
-
-        let data;
-        try { data=parseJSON(result.text); }
-        catch(e){ flash("I received wisdom but couldn’t format it. Please try again."); return; }
-
-        for(let i=0;i<5;i++) document.getElementById("panel"+i).classList.remove("active");
+        let data;try{data=parseJSON(result.text);}catch(e){flash("I received wisdom but couldn’t format it. Please click Create again.");return;}
+        for(let i=0;i<5;i++)document.getElementById("panel"+i).classList.remove("active");
         renderOnePager(data);
-        document.getElementById("results").style.display="block"; setDot(4); flash("");
+        document.getElementById("results").style.display="block";setDot(4);flash("");
       }
 
       function downloadOnePager(){
         const el=document.getElementById("onepager");
-        const opt={ margin:0, filename:"wisdom-onepager.pdf",
+        const opt={margin:0,filename:"the-takeaway-onepager.pdf",
           image:{type:"jpeg",quality:0.98},
-          html2canvas:{scale:2, backgroundColor:"#fffdf7", windowWidth:794},
-          jsPDF:{unit:"px", format:[794,1123], orientation:"portrait"} };
+          html2canvas:{scale:2,backgroundColor:null,width:794,height:1123,windowWidth:794,windowHeight:1123},
+          jsPDF:{unit:"px",format:[794,1123],orientation:"portrait"}};
         html2pdf().set(opt).from(el).save();
       }
 
       function startOver(){
-        document.getElementById("mediaLink").value="";
-        document.getElementById("transcript").value="";
-        document.getElementById("detected").textContent="";
-        mediaType="";helpChoice="";platform="";
+        document.getElementById("mediaLink").value="";document.getElementById("transcript").value="";
+        document.getElementById("detected").textContent="";mediaType="";helpChoice="";platform="";
         ["typeVideo","typeAudio","helpNo","helpYes"].forEach(id=>document.getElementById(id).classList.remove("selected"));
-        document.getElementById("transcriptArea").style.display="none";
-        document.getElementById("helpBox").classList.remove("show");
+        document.getElementById("transcriptArea").style.display="none";document.getElementById("helpBox").classList.remove("show");
         showPanel(1);
       }
     </script>
